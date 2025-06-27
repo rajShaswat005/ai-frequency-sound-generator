@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Play, Pause, Volume2, Waves, Brain, Heart } from "lucide-react";
 import { FrequencyVisualizer } from "@/components/FrequencyVisualizer";
 import { MoodButtons } from "@/components/MoodButtons";
@@ -14,6 +15,7 @@ const Index = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState([50]);
   const [selectedMood, setSelectedMood] = useState("");
+  const [activeTab, setActiveTab] = useState("mood-input");
   
   const audioContextRef = useRef<AudioContext | null>(null);
   const oscillatorRef = useRef<OscillatorNode | null>(null);
@@ -64,6 +66,7 @@ const Index = () => {
     const detectedMood = analyzeMood(moodText);
     setSelectedMood(detectedMood);
     setFrequency(moodFrequencies[detectedMood as keyof typeof moodFrequencies].freq || 440);
+    setActiveTab("frequency");
   };
 
   const startAudio = () => {
@@ -132,7 +135,7 @@ const Index = () => {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }}></div>
       </div>
 
-      <div className="max-w-2xl mx-auto space-y-8 relative z-10">
+      <div className="max-w-4xl mx-auto space-y-8 relative z-10">
         {/* Enhanced Header */}
         <div className="text-center space-y-4 pt-8">
           <div className="flex items-center justify-center space-x-3 mb-4">
@@ -156,178 +159,216 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Enhanced Mood Input */}
+        {/* Main Tabs */}
         <Card className="bg-gradient-to-br from-purple-950/80 via-purple-900/50 to-black/80 border-purple-800/50 backdrop-blur-sm shadow-2xl">
-          <div className="p-8 space-y-6">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">1</span>
-              </div>
-              <h2 className="text-2xl font-semibold text-purple-200">Share Your Current State</h2>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="relative">
-                <Textarea
-                  placeholder="Describe how you're feeling right now in your own words... The more specific, the better your personalized frequency will be."
-                  value={moodText}
-                  onChange={(e) => setMoodText(e.target.value)}
-                  className="bg-purple-900/30 border-purple-700/50 text-white placeholder:text-purple-400 min-h-28 text-base leading-relaxed focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
-                />
-                <div className="absolute bottom-3 right-3 text-xs text-purple-400">
-                  {moodText.length}/500
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                <p className="text-purple-300 text-sm font-medium">Or select a mood:</p>
-                <MoodButtons selectedMood={selectedMood} onMoodSelect={setSelectedMood} />
-              </div>
-              
-              <Button 
-                onClick={generateFrequency}
-                className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white font-medium py-3 text-base shadow-lg transform transition-all duration-200 hover:scale-[1.02] hover:shadow-purple-500/25"
-                disabled={!moodText.trim()}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-3 bg-purple-900/30 border-purple-700/50">
+              <TabsTrigger 
+                value="mood-input" 
+                className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
               >
-                Generate My Healing Frequency
-              </Button>
-            </div>
-          </div>
-        </Card>
+                Mood Input
+              </TabsTrigger>
+              <TabsTrigger 
+                value="frequency" 
+                className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+              >
+                Frequency
+              </TabsTrigger>
+              <TabsTrigger 
+                value="information" 
+                className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+              >
+                Information
+              </TabsTrigger>
+            </TabsList>
 
-        {/* Enhanced Frequency Visualization */}
-        {frequency && (
-          <Card className="bg-gradient-to-br from-purple-950/80 via-purple-900/50 to-black/80 border-purple-800/50 backdrop-blur-sm shadow-2xl overflow-hidden">
-            <div className="p-8 space-y-8">
-              <div className="flex items-center space-x-3">
+            {/* Mood Input Tab */}
+            <TabsContent value="mood-input" className="space-y-6 p-8">
+              <div className="flex items-center space-x-3 mb-6">
                 <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">2</span>
+                  <span className="text-white font-bold text-sm">1</span>
                 </div>
-                <h2 className="text-2xl font-semibold text-purple-200">Your Personalized Frequency</h2>
+                <h2 className="text-2xl font-semibold text-purple-200">Share Your Current State</h2>
               </div>
               
-              <div className="text-center space-y-4">
-                <div className="relative inline-block">
-                  <div className={`absolute inset-0 bg-gradient-to-r ${currentMoodData?.color || 'from-purple-500 to-violet-500'} rounded-full blur-xl opacity-30 animate-pulse`}></div>
-                  <div className="relative bg-gradient-to-br from-purple-900/50 to-black/50 rounded-2xl p-6 border border-purple-700/30">
-                    <div className="text-4xl font-bold text-white mb-2">{frequency} Hz</div>
-                    {selectedMood && currentMoodData && (
-                      <div className="space-y-2">
-                        <div className={`inline-block px-4 py-2 bg-gradient-to-r ${currentMoodData.color} rounded-full text-white text-sm font-medium capitalize shadow-lg`}>
-                          {selectedMood}
-                        </div>
-                        <p className="text-purple-300 text-sm font-medium">{currentMoodData.desc}</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="relative">
-                <FrequencyVisualizer frequency={frequency} isPlaying={isPlaying} />
-                {isPlaying && (
-                  <div className="absolute top-2 right-2">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                    </div>
-                  </div>
-                )}
-              </div>
-              
-              {/* Enhanced Audio Controls */}
-              <div className="bg-gradient-to-r from-purple-900/30 to-black/30 rounded-xl p-6 border border-purple-700/30">
-                <div className="flex items-center justify-center space-x-6">
-                  <Button
-                    onClick={toggleAudio}
-                    size="lg"
-                    className={`${
-                      isPlaying 
-                        ? 'bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600' 
-                        : 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600'
-                    } text-white rounded-full p-6 shadow-lg transform transition-all duration-200 hover:scale-110 hover:shadow-2xl`}
-                  >
-                    {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8" />}
-                  </Button>
-                  
-                  <div className="flex items-center space-x-4 flex-1 max-w-xs">
-                    <Volume2 className="h-5 w-5 text-purple-300" />
-                    <div className="flex-1 space-y-2">
-                      <Slider
-                        value={volume}
-                        onValueChange={setVolume}
-                        max={100}
-                        step={1}
-                        className="flex-1"
-                      />
-                      <div className="flex justify-between text-xs text-purple-400">
-                        <span>0%</span>
-                        <span className="font-medium">{volume[0]}%</span>
-                        <span>100%</span>
-                      </div>
-                    </div>
+              <div className="space-y-4">
+                <div className="relative">
+                  <Textarea
+                    placeholder="Describe how you're feeling right now in your own words... The more specific, the better your personalized frequency will be."
+                    value={moodText}
+                    onChange={(e) => setMoodText(e.target.value)}
+                    className="bg-purple-900/30 border-purple-700/50 text-white placeholder:text-purple-400 min-h-28 text-base leading-relaxed focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+                  />
+                  <div className="absolute bottom-3 right-3 text-xs text-purple-400">
+                    {moodText.length}/500
                   </div>
                 </div>
                 
-                <div className="mt-4 text-center">
-                  <p className="text-purple-300 text-sm">
-                    {isPlaying ? 'Frequency is now playing. Find a comfortable position and let the healing begin.' : 'Click play to start your personalized sound therapy session.'}
-                  </p>
+                <div className="space-y-3">
+                  <p className="text-purple-300 text-sm font-medium">Or select a mood:</p>
+                  <MoodButtons selectedMood={selectedMood} onMoodSelect={setSelectedMood} />
                 </div>
+                
+                <Button 
+                  onClick={generateFrequency}
+                  className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white font-medium py-3 text-base shadow-lg transform transition-all duration-200 hover:scale-[1.02] hover:shadow-purple-500/25"
+                  disabled={!moodText.trim()}
+                >
+                  Generate My Healing Frequency
+                </Button>
               </div>
-            </div>
-          </Card>
-        )}
+            </TabsContent>
 
-        {/* Enhanced Info Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="bg-gradient-to-br from-purple-950/60 to-black/60 border-purple-800/30 backdrop-blur-sm p-6">
-            <div className="flex items-start space-x-4">
-              <div className="p-2 bg-purple-600/20 rounded-lg">
-                <Brain className="h-5 w-5 text-purple-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-purple-200 mb-2">Science-Based Frequencies</h3>
-                <p className="text-purple-300 text-sm leading-relaxed">
-                  Each frequency is carefully selected based on sound therapy research to resonate with your emotional state and promote natural healing.
-                </p>
-              </div>
-            </div>
-          </Card>
-          
-          <Card className="bg-gradient-to-br from-purple-950/60 to-black/60 border-purple-800/30 backdrop-blur-sm p-6">
-            <div className="flex items-start space-x-4">
-              <div className="p-2 bg-violet-600/20 rounded-lg">
-                <Heart className="h-5 w-5 text-violet-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-purple-200 mb-2">Personalized Therapy</h3>
-                <p className="text-purple-300 text-sm leading-relaxed">
-                  Your unique emotional profile is analyzed to create a custom frequency that matches your specific needs and current state.
-                </p>
-              </div>
-            </div>
-          </Card>
-        </div>
+            {/* Frequency Tab */}
+            <TabsContent value="frequency" className="space-y-6 p-8">
+              {frequency ? (
+                <>
+                  <div className="flex items-center space-x-3 mb-6">
+                    <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">2</span>
+                    </div>
+                    <h2 className="text-2xl font-semibold text-purple-200">Your Personalized Frequency</h2>
+                  </div>
+                  
+                  <div className="text-center space-y-4">
+                    <div className="relative inline-block">
+                      <div className={`absolute inset-0 bg-gradient-to-r ${currentMoodData?.color || 'from-purple-500 to-violet-500'} rounded-full blur-xl opacity-30 animate-pulse`}></div>
+                      <div className="relative bg-gradient-to-br from-purple-900/50 to-black/50 rounded-2xl p-6 border border-purple-700/30">
+                        <div className="text-4xl font-bold text-white mb-2">{frequency} Hz</div>
+                        {selectedMood && currentMoodData && (
+                          <div className="space-y-2">
+                            <div className={`inline-block px-4 py-2 bg-gradient-to-r ${currentMoodData.color} rounded-full text-white text-sm font-medium capitalize shadow-lg`}>
+                              {selectedMood}
+                            </div>
+                            <p className="text-purple-300 text-sm font-medium">{currentMoodData.desc}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="relative">
+                    <FrequencyVisualizer frequency={frequency} isPlaying={isPlaying} />
+                    {isPlaying && (
+                      <div className="absolute top-2 right-2">
+                        <div className="flex space-x-1">
+                          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="bg-gradient-to-r from-purple-900/30 to-black/30 rounded-xl p-6 border border-purple-700/30">
+                    <div className="flex items-center justify-center space-x-6">
+                      <Button
+                        onClick={toggleAudio}
+                        size="lg"
+                        className={`${
+                          isPlaying 
+                            ? 'bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600' 
+                            : 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600'
+                        } text-white rounded-full p-6 shadow-lg transform transition-all duration-200 hover:scale-110 hover:shadow-2xl`}
+                      >
+                        {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8" />}
+                      </Button>
+                      
+                      <div className="flex items-center space-x-4 flex-1 max-w-xs">
+                        <Volume2 className="h-5 w-5 text-purple-300" />
+                        <div className="flex-1 space-y-2">
+                          <Slider
+                            value={volume}
+                            onValueChange={setVolume}
+                            max={100}
+                            step={1}
+                            className="flex-1"
+                          />
+                          <div className="flex justify-between text-xs text-purple-400">
+                            <span>0%</span>
+                            <span className="font-medium">{volume[0]}%</span>
+                            <span>100%</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-4 text-center">
+                      <p className="text-purple-300 text-sm">
+                        {isPlaying ? 'Frequency is now playing. Find a comfortable position and let the healing begin.' : 'Click play to start your personalized sound therapy session.'}
+                      </p>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-12">
+                  <div className="text-purple-400 mb-4">
+                    <Waves className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                  </div>
+                  <p className="text-purple-300 text-lg">Generate a frequency first by describing your mood in the Mood Input tab.</p>
+                </div>
+              )}
+            </TabsContent>
 
-        {/* Usage Tips */}
-        <Card className="bg-gradient-to-br from-indigo-950/40 to-purple-950/40 border-indigo-800/30 backdrop-blur-sm p-6">
-          <h3 className="font-semibold text-indigo-200 mb-4 flex items-center space-x-2">
-            <Waves className="h-5 w-5" />
-            <span>Therapy Tips</span>
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div className="text-indigo-300">
-              <strong>Duration:</strong> Listen for 10-20 minutes for optimal effects
-            </div>
-            <div className="text-indigo-300">
-              <strong>Environment:</strong> Use headphones in a quiet, comfortable space
-            </div>
-            <div className="text-indigo-300">
-              <strong>Practice:</strong> Regular sessions amplify the healing benefits
-            </div>
-          </div>
+            {/* Information Tab */}
+            <TabsContent value="information" className="space-y-6 p-8">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">i</span>
+                </div>
+                <h2 className="text-2xl font-semibold text-purple-200">Learn About Sound Therapy</h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <Card className="bg-gradient-to-br from-purple-950/60 to-black/60 border-purple-800/30 backdrop-blur-sm p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="p-2 bg-purple-600/20 rounded-lg">
+                      <Brain className="h-5 w-5 text-purple-400" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-purple-200 mb-2">Science-Based Frequencies</h3>
+                      <p className="text-purple-300 text-sm leading-relaxed">
+                        Each frequency is carefully selected based on sound therapy research to resonate with your emotional state and promote natural healing.
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+                
+                <Card className="bg-gradient-to-br from-purple-950/60 to-black/60 border-purple-800/30 backdrop-blur-sm p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="p-2 bg-violet-600/20 rounded-lg">
+                      <Heart className="h-5 w-5 text-violet-400" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-purple-200 mb-2">Personalized Therapy</h3>
+                      <p className="text-purple-300 text-sm leading-relaxed">
+                        Your unique emotional profile is analyzed to create a custom frequency that matches your specific needs and current state.
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+
+              <Card className="bg-gradient-to-br from-indigo-950/40 to-purple-950/40 border-indigo-800/30 backdrop-blur-sm p-6">
+                <h3 className="font-semibold text-indigo-200 mb-4 flex items-center space-x-2">
+                  <Waves className="h-5 w-5" />
+                  <span>Therapy Tips</span>
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <div className="text-indigo-300">
+                    <strong>Duration:</strong> Listen for 10-20 minutes for optimal effects
+                  </div>
+                  <div className="text-indigo-300">
+                    <strong>Environment:</strong> Use headphones in a quiet, comfortable space
+                  </div>
+                  <div className="text-indigo-300">
+                    <strong>Practice:</strong> Regular sessions amplify the healing benefits
+                  </div>
+                </div>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </Card>
       </div>
     </div>
