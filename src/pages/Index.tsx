@@ -1,11 +1,10 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Play, Pause, Volume2, Waves, Brain, Heart } from "lucide-react";
+import { Play, Pause, Volume2, Waves, Brain, Heart, Mic, MicOff } from "lucide-react";
 import { FrequencyVisualizer } from "@/components/FrequencyVisualizer";
 import { MoodButtons } from "@/components/MoodButtons";
 
@@ -16,6 +15,7 @@ const Index = () => {
   const [volume, setVolume] = useState([50]);
   const [selectedMood, setSelectedMood] = useState("");
   const [activeTab, setActiveTab] = useState("mood-input");
+  const [isListening, setIsListening] = useState(false);
   
   const audioContextRef = useRef<AudioContext | null>(null);
   const oscillatorRef = useRef<OscillatorNode | null>(null);
@@ -23,14 +23,14 @@ const Index = () => {
 
   // Mood to frequency mapping with descriptions
   const moodFrequencies = {
-    calm: { freq: 432, desc: "Harmonious & Grounding", color: "from-blue-500 to-teal-500" },
-    anxious: { freq: 320, desc: "Soothing & Stabilizing", color: "from-orange-500 to-red-500" },
-    angry: { freq: 200, desc: "Releasing & Transforming", color: "from-red-500 to-pink-500" },
-    sad: { freq: 256, desc: "Healing & Uplifting", color: "from-indigo-500 to-purple-500" },
-    happy: { freq: 528, desc: "Love & Transformation", color: "from-yellow-500 to-green-500" },
-    energetic: { freq: 640, desc: "Vitality & Motivation", color: "from-green-500 to-emerald-500" },
-    peaceful: { freq: 396, desc: "Liberation & Freedom", color: "from-cyan-500 to-blue-500" },
-    stressed: { freq: 285, desc: "Restoration & Renewal", color: "from-purple-500 to-violet-500" }
+    calm: { freq: 432, desc: "Harmonious & Grounding", color: "from-blue-500 to-teal-500", soundDesc: "A gentle 432Hz tone that promotes deep relaxation and inner peace" },
+    anxious: { freq: 320, desc: "Soothing & Stabilizing", color: "from-orange-500 to-red-500", soundDesc: "A calming 320Hz frequency designed to reduce anxiety and restore balance" },
+    angry: { freq: 200, desc: "Releasing & Transforming", color: "from-red-500 to-pink-500", soundDesc: "A grounding 200Hz tone that helps release tension and transform anger" },
+    sad: { freq: 256, desc: "Healing & Uplifting", color: "from-indigo-500 to-purple-500", soundDesc: "An uplifting 256Hz frequency that supports emotional healing and renewal" },
+    happy: { freq: 528, desc: "Love & Transformation", color: "from-yellow-500 to-green-500", soundDesc: "The powerful 528Hz 'Love Frequency' that amplifies joy and positive energy" },
+    energetic: { freq: 640, desc: "Vitality & Motivation", color: "from-green-500 to-emerald-500", soundDesc: "An energizing 640Hz tone that boosts vitality and motivation" },
+    peaceful: { freq: 396, desc: "Liberation & Freedom", color: "from-cyan-500 to-blue-500", soundDesc: "A liberating 396Hz frequency that promotes inner peace and freedom from fear" },
+    stressed: { freq: 285, desc: "Restoration & Renewal", color: "from-purple-500 to-violet-500", soundDesc: "A restorative 285Hz tone that helps repair and renew your energy field" }
   };
 
   const analyzeMood = (text: string) => {
@@ -61,12 +61,43 @@ const Index = () => {
   };
 
   const generateFrequency = () => {
-    if (!moodText.trim()) return;
+    if (!moodText.trim() && !selectedMood) return;
     
-    const detectedMood = analyzeMood(moodText);
+    const detectedMood = selectedMood || analyzeMood(moodText);
     setSelectedMood(detectedMood);
     setFrequency(moodFrequencies[detectedMood as keyof typeof moodFrequencies].freq || 440);
     setActiveTab("frequency");
+  };
+
+  const startVoiceRecognition = () => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+      const recognition = new SpeechRecognition();
+      
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+      
+      recognition.onstart = () => {
+        setIsListening(true);
+      };
+      
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setMoodText(transcript);
+        setIsListening(false);
+      };
+      
+      recognition.onerror = () => {
+        setIsListening(false);
+      };
+      
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+      
+      recognition.start();
+    }
   };
 
   const startAudio = () => {
@@ -136,19 +167,26 @@ const Index = () => {
       </div>
 
       <div className="max-w-4xl mx-auto space-y-8 relative z-10">
-        {/* Enhanced Header */}
+        {/* Enhanced Header with Logo */}
         <div className="text-center space-y-4 pt-8">
-          <div className="flex items-center justify-center space-x-3 mb-4">
-            <div className="p-3 bg-gradient-to-r from-purple-600 to-violet-600 rounded-full">
-              <Brain className="h-6 w-6 text-white" />
-            </div>
-            <div className="w-12 h-0.5 bg-gradient-to-r from-purple-400 to-transparent"></div>
-            <div className="p-3 bg-gradient-to-r from-violet-600 to-purple-600 rounded-full">
-              <Waves className="h-6 w-6 text-white" />
+          <div className="flex items-center justify-center space-x-4 mb-6">
+            <img 
+              src="/lovable-uploads/e6890236-4ef5-4905-8d29-a7fdc9974483.png" 
+              alt="Aurix Logo" 
+              className="w-16 h-16"
+            />
+            <div className="flex items-center space-x-3">
+              <div className="p-3 bg-gradient-to-r from-purple-600 to-violet-600 rounded-full">
+                <Brain className="h-6 w-6 text-white" />
+              </div>
+              <div className="w-12 h-0.5 bg-gradient-to-r from-purple-400 to-transparent"></div>
+              <div className="p-3 bg-gradient-to-r from-violet-600 to-purple-600 rounded-full">
+                <Waves className="h-6 w-6 text-white" />
+              </div>
             </div>
           </div>
           <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-400 via-violet-400 to-purple-600 bg-clip-text text-transparent animate-fade-in">
-            Mood Frequency Therapy
+            Aurix - Mood Frequency Therapy
           </h1>
           <p className="text-purple-300 text-lg font-light max-w-md mx-auto leading-relaxed">
             Transform your emotions into healing frequencies through the power of sound therapy
@@ -192,28 +230,69 @@ const Index = () => {
                 <h2 className="text-2xl font-semibold text-purple-200">Share Your Current State</h2>
               </div>
               
-              <div className="space-y-4">
-                <div className="relative">
-                  <Textarea
-                    placeholder="Describe how you're feeling right now in your own words... The more specific, the better your personalized frequency will be."
-                    value={moodText}
-                    onChange={(e) => setMoodText(e.target.value)}
-                    className="bg-purple-900/30 border-purple-700/50 text-white placeholder:text-purple-400 min-h-28 text-base leading-relaxed focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
-                  />
-                  <div className="absolute bottom-3 right-3 text-xs text-purple-400">
-                    {moodText.length}/500
-                  </div>
+              <div className="space-y-6">
+                {/* Voice Controls */}
+                <div className="flex items-center justify-center space-x-4">
+                  <Button
+                    onClick={startVoiceRecognition}
+                    disabled={isListening}
+                    className={`${
+                      isListening 
+                        ? 'bg-red-500 hover:bg-red-600' 
+                        : 'bg-purple-600 hover:bg-purple-700'
+                    } text-white px-6 py-2 rounded-full transition-all duration-200`}
+                  >
+                    {isListening ? (
+                      <>
+                        <MicOff className="h-4 w-4 mr-2" />
+                        Listening...
+                      </>
+                    ) : (
+                      <>
+                        <Mic className="h-4 w-4 mr-2" />
+                        Voice Input
+                      </>
+                    )}
+                  </Button>
+                  {isListening && (
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
+                      <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Mood Selection Buttons */}
+                <div className="space-y-3">
+                  <p className="text-purple-300 text-sm font-medium text-center">Select your current mood:</p>
+                  <MoodButtons selectedMood={selectedMood} onMoodSelect={setSelectedMood} />
                 </div>
                 
-                <div className="space-y-3">
-                  <p className="text-purple-300 text-sm font-medium">Or select a mood:</p>
-                  <MoodButtons selectedMood={selectedMood} onMoodSelect={setSelectedMood} />
+                {/* Large Textarea */}
+                <div className="space-y-2">
+                  <label htmlFor="mood-input" className="text-purple-300 text-sm font-medium">
+                    Or describe how you're feeling in detail:
+                  </label>
+                  <div className="relative">
+                    <Textarea
+                      id="mood-input"
+                      placeholder="Tell me about your current emotional state... The more you share, the better I can personalize your healing frequency. Describe your feelings, what's on your mind, or what kind of support you need right now."
+                      value={moodText}
+                      onChange={(e) => setMoodText(e.target.value)}
+                      className="bg-purple-900/30 border-purple-700/50 text-white placeholder:text-purple-400 min-h-40 text-base leading-relaxed focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 resize-none"
+                      rows={8}
+                    />
+                    <div className="absolute bottom-3 right-3 text-xs text-purple-400">
+                      {moodText.length}/1000
+                    </div>
+                  </div>
                 </div>
                 
                 <Button 
                   onClick={generateFrequency}
-                  className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white font-medium py-3 text-base shadow-lg transform transition-all duration-200 hover:scale-[1.02] hover:shadow-purple-500/25"
-                  disabled={!moodText.trim()}
+                  className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white font-medium py-4 text-base shadow-lg transform transition-all duration-200 hover:scale-[1.02] hover:shadow-purple-500/25"
+                  disabled={!moodText.trim() && !selectedMood}
                 >
                   Generate My Healing Frequency
                 </Button>
@@ -237,11 +316,17 @@ const Index = () => {
                       <div className="relative bg-gradient-to-br from-purple-900/50 to-black/50 rounded-2xl p-6 border border-purple-700/30">
                         <div className="text-4xl font-bold text-white mb-2">{frequency} Hz</div>
                         {selectedMood && currentMoodData && (
-                          <div className="space-y-2">
+                          <div className="space-y-3">
                             <div className={`inline-block px-4 py-2 bg-gradient-to-r ${currentMoodData.color} rounded-full text-white text-sm font-medium capitalize shadow-lg`}>
                               {selectedMood}
                             </div>
                             <p className="text-purple-300 text-sm font-medium">{currentMoodData.desc}</p>
+                            <div className="bg-purple-900/30 rounded-lg p-4 mt-4">
+                              <h4 className="text-purple-200 font-medium mb-2">Sound Description:</h4>
+                              <p className="text-purple-300 text-sm leading-relaxed">
+                                {currentMoodData.soundDesc}
+                              </p>
+                            </div>
                           </div>
                         )}
                       </div>
