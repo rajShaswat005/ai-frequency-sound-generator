@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -175,19 +176,10 @@ const Index = () => {
               alt="Aurix Logo" 
               className="w-16 h-16"
             />
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-gradient-to-r from-purple-600 to-violet-600 rounded-full">
-                <Brain className="h-6 w-6 text-white" />
-              </div>
-              <div className="w-12 h-0.5 bg-gradient-to-r from-purple-400 to-transparent"></div>
-              <div className="p-3 bg-gradient-to-r from-violet-600 to-purple-600 rounded-full">
-                <Waves className="h-6 w-6 text-white" />
-              </div>
-            </div>
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-400 via-violet-400 to-purple-600 bg-clip-text text-transparent">
+              Aurix
+            </h1>
           </div>
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-400 via-violet-400 to-purple-600 bg-clip-text text-transparent animate-fade-in">
-            Aurix - Mood Frequency Therapy
-          </h1>
           <p className="text-purple-300 text-lg font-light max-w-md mx-auto leading-relaxed">
             Transform your emotions into healing frequencies through the power of sound therapy
           </p>
@@ -222,7 +214,7 @@ const Index = () => {
             </TabsList>
 
             {/* Mood Input Tab */}
-            <TabsContent value="mood-input" className="space-y-6 p-8">
+            <TabsContent value="mood-input" className="space-y-8 p-8">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-sm">1</span>
@@ -230,7 +222,7 @@ const Index = () => {
                 <h2 className="text-2xl font-semibold text-purple-200">Share Your Current State</h2>
               </div>
               
-              <div className="space-y-6">
+              <div className="space-y-8">
                 {/* Voice Controls */}
                 <div className="flex items-center justify-center space-x-4">
                   <Button
@@ -264,7 +256,7 @@ const Index = () => {
                 </div>
 
                 {/* Mood Selection Buttons */}
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <p className="text-purple-300 text-sm font-medium text-center">Select your current mood:</p>
                   <MoodButtons selectedMood={selectedMood} onMoodSelect={setSelectedMood} />
                 </div>
@@ -289,13 +281,15 @@ const Index = () => {
                   </div>
                 </div>
                 
-                <Button 
-                  onClick={generateFrequency}
-                  className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white font-medium py-4 text-base shadow-lg transform transition-all duration-200 hover:scale-[1.02] hover:shadow-purple-500/25"
-                  disabled={!moodText.trim() && !selectedMood}
-                >
-                  Generate My Healing Frequency
-                </Button>
+                <div className="flex justify-center">
+                  <Button 
+                    onClick={generateFrequency}
+                    className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white font-medium py-4 px-8 text-base shadow-lg transform transition-all duration-200 hover:scale-[1.02] hover:shadow-purple-500/25"
+                    disabled={!moodText.trim() && !selectedMood}
+                  >
+                    Generate
+                  </Button>
+                </div>
               </div>
             </TabsContent>
 
@@ -347,6 +341,19 @@ const Index = () => {
                   </div>
                   
                   <div className="bg-gradient-to-r from-purple-900/30 to-black/30 rounded-xl p-6 border border-purple-700/30">
+                    {/* Current Playing Frequency Display */}
+                    {isPlaying && (
+                      <div className="text-center mb-4 p-3 bg-purple-800/20 rounded-lg border border-purple-700/30">
+                        <div className="flex items-center justify-center space-x-2 text-green-400">
+                          <Waves className="h-4 w-4 animate-pulse" />
+                          <span className="font-medium">Now Playing: {frequency} Hz</span>
+                          {selectedMood && (
+                            <span className="text-purple-300">({selectedMood} frequency)</span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    
                     <div className="flex items-center justify-center space-x-6">
                       <Button
                         onClick={toggleAudio}
