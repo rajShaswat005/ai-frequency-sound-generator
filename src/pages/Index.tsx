@@ -1,13 +1,14 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Play, Pause, Volume2, Waves, Brain, Heart } from "lucide-react";
+import { Play, Pause, Volume2, Waves, Brain, Heart, Sun, Mountain, Flame, Shell, Lotus } from "lucide-react";
 import { FrequencyVisualizer } from "@/components/FrequencyVisualizer";
 import { MoodButtons } from "@/components/MoodButtons";
+import { WhiteNoisePlayer } from "@/components/WhiteNoisePlayer";
+import { EnhancedFrequencyPlayer } from "@/components/EnhancedFrequencyPlayer";
 
 const Index = () => {
   const [moodText, setMoodText] = useState("");
@@ -128,31 +129,37 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900 text-white p-4 relative overflow-hidden">
-      {/* Animated background elements */}
+      {/* Enhanced animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute top-10 right-1/4 w-48 h-48 bg-pink-500/8 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '6s' }}></div>
+        <div className="absolute bottom-10 left-1/4 w-56 h-56 bg-cyan-500/8 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '8s' }}></div>
       </div>
 
       <div className="max-w-4xl mx-auto space-y-8 relative z-10">
-        {/* Enhanced Header with Logo */}
+        {/* Enhanced Header with New Logo Design */}
         <div className="text-center space-y-4 pt-8">
           <div className="flex items-center justify-center space-x-4 mb-6">
-            <img 
-              src="/lovable-uploads/e6890236-4ef5-4905-8d29-a7fdc9974483.png" 
-              alt="Aurix Logo" 
-              className="w-16 h-16"
-            />
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-400 via-violet-400 to-purple-600 bg-clip-text text-transparent">
+            {/* New Logo Design matching the theme */}
+            <div className="relative">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 p-1 animate-pulse">
+                <div className="w-full h-full rounded-full bg-black flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 animate-pulse"></div>
+                </div>
+              </div>
+              <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 animate-bounce"></div>
+            </div>
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent animate-pulse">
               Aurix
             </h1>
           </div>
-          <p className="text-purple-300 text-lg font-light max-w-md mx-auto leading-relaxed">
+          <p className="text-purple-300 text-lg font-light max-w-md mx-auto leading-relaxed animate-fade-in">
             Transform your emotions into healing frequencies through the power of sound therapy
           </p>
-          <div className="flex items-center justify-center space-x-2 text-purple-400 text-sm">
-            <Heart className="h-4 w-4" />
+          <div className="flex items-center justify-center space-x-2 text-purple-400 text-sm animate-fade-in">
+            <Heart className="h-4 w-4 animate-pulse" />
             <span>Scientifically crafted for emotional wellness</span>
           </div>
         </div>
@@ -160,7 +167,7 @@ const Index = () => {
         {/* Main Tabs */}
         <Card className="bg-black/40 border-purple-900/60 backdrop-blur-md shadow-2xl">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-black/60 border-purple-800/60">
+            <TabsList className="grid w-full grid-cols-4 bg-black/60 border-purple-800/60">
               <TabsTrigger 
                 value="mood-input" 
                 className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white"
@@ -172,6 +179,12 @@ const Index = () => {
                 className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white"
               >
                 Frequency
+              </TabsTrigger>
+              <TabsTrigger 
+                value="white-noise" 
+                className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white"
+              >
+                White Noise
               </TabsTrigger>
               <TabsTrigger 
                 value="information" 
@@ -229,7 +242,7 @@ const Index = () => {
               </div>
             </TabsContent>
 
-            {/* Frequency Tab */}
+            {/* Enhanced Frequency Tab */}
             <TabsContent value="frequency" className="space-y-6 p-8">
               {frequency ? (
                 <>
@@ -240,94 +253,15 @@ const Index = () => {
                     <h2 className="text-2xl font-semibold text-purple-200">Your Personalized Frequency</h2>
                   </div>
                   
-                  <div className="text-center space-y-4">
-                    <div className="relative inline-block">
-                      <div className={`absolute inset-0 bg-gradient-to-r ${currentMoodData?.color || 'from-purple-500 to-violet-500'} rounded-full blur-xl opacity-30 animate-pulse`}></div>
-                      <div className="relative bg-black/60 rounded-2xl p-6 border border-purple-800/40">
-                        <div className="text-4xl font-bold text-white mb-2">{frequency} Hz</div>
-                        {selectedMood && currentMoodData && (
-                          <div className="space-y-3">
-                            <div className={`inline-block px-4 py-2 bg-gradient-to-r ${currentMoodData.color} rounded-full text-white text-sm font-medium capitalize shadow-lg`}>
-                              {selectedMood}
-                            </div>
-                            <p className="text-purple-300 text-sm font-medium">{currentMoodData.desc}</p>
-                            <div className="bg-black/40 rounded-lg p-4 mt-4">
-                              <h4 className="text-purple-200 font-medium mb-2">Sound Description:</h4>
-                              <p className="text-purple-300 text-sm leading-relaxed">
-                                {currentMoodData.soundDesc}
-                              </p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="relative">
-                    <FrequencyVisualizer frequency={frequency} isPlaying={isPlaying} />
-                    {isPlaying && (
-                      <div className="absolute top-2 right-2">
-                        <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="bg-black/50 rounded-xl p-6 border border-purple-800/40">
-                    {/* Current Playing Frequency Display */}
-                    {isPlaying && (
-                      <div className="text-center mb-4 p-3 bg-black/40 rounded-lg border border-purple-800/40">
-                        <div className="flex items-center justify-center space-x-2 text-green-400">
-                          <Waves className="h-4 w-4 animate-pulse" />
-                          <span className="font-medium">Now Playing: {frequency} Hz</span>
-                          {selectedMood && (
-                            <span className="text-purple-300">({selectedMood} frequency)</span>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                    
-                    <div className="flex items-center justify-center space-x-6">
-                      <Button
-                        onClick={toggleAudio}
-                        size="lg"
-                        className={`${
-                          isPlaying 
-                            ? 'bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600' 
-                            : 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600'
-                        } text-white rounded-full p-6 shadow-lg transform transition-all duration-200 hover:scale-110 hover:shadow-2xl`}
-                      >
-                        {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8" />}
-                      </Button>
-                      
-                      <div className="flex items-center space-x-4 flex-1 max-w-xs">
-                        <Volume2 className="h-5 w-5 text-purple-300" />
-                        <div className="flex-1 space-y-2">
-                          <Slider
-                            value={volume}
-                            onValueChange={setVolume}
-                            max={100}
-                            step={1}
-                            className="flex-1"
-                          />
-                          <div className="flex justify-between text-xs text-purple-400">
-                            <span>0%</span>
-                            <span className="font-medium">{volume[0]}%</span>
-                            <span>100%</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-4 text-center">
-                      <p className="text-purple-300 text-sm">
-                        {isPlaying ? 'Frequency is now playing. Find a comfortable position and let the healing begin.' : 'Click play to start your personalized sound therapy session.'}
-                      </p>
-                    </div>
-                  </div>
+                  <EnhancedFrequencyPlayer 
+                    frequency={frequency}
+                    isPlaying={isPlaying}
+                    volume={volume}
+                    onVolumeChange={setVolume}
+                    onTogglePlay={toggleAudio}
+                    selectedMood={selectedMood}
+                    currentMoodData={currentMoodData}
+                  />
                 </>
               ) : (
                 <div className="text-center py-12">
@@ -337,6 +271,18 @@ const Index = () => {
                   <p className="text-purple-300 text-lg">Generate a frequency first by describing your mood in the Mood Input tab.</p>
                 </div>
               )}
+            </TabsContent>
+
+            {/* New White Noise Tab */}
+            <TabsContent value="white-noise" className="space-y-6 p-8">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">3</span>
+                </div>
+                <h2 className="text-2xl font-semibold text-purple-200">Natural White Noise</h2>
+              </div>
+              
+              <WhiteNoisePlayer />
             </TabsContent>
 
             {/* Information Tab */}

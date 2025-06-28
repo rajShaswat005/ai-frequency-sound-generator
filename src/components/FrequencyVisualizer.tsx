@@ -23,20 +23,22 @@ export const FrequencyVisualizer = ({ frequency, isPlaying }: FrequencyVisualize
       
       ctx.clearRect(0, 0, width, height);
       
-      // Create gradient
+      // Enhanced gradient with more colors
       const gradient = ctx.createLinearGradient(0, 0, width, 0);
-      gradient.addColorStop(0, "rgba(147, 51, 234, 0.3)");
-      gradient.addColorStop(0.5, "rgba(147, 51, 234, 0.8)");
-      gradient.addColorStop(1, "rgba(147, 51, 234, 0.3)");
+      gradient.addColorStop(0, "rgba(147, 51, 234, 0.2)");
+      gradient.addColorStop(0.2, "rgba(168, 85, 247, 0.6)");
+      gradient.addColorStop(0.5, "rgba(196, 181, 253, 0.9)");
+      gradient.addColorStop(0.8, "rgba(168, 85, 247, 0.6)");
+      gradient.addColorStop(1, "rgba(147, 51, 234, 0.2)");
       
+      // Main wave
       ctx.strokeStyle = gradient;
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 3;
       ctx.beginPath();
       
-      // Generate wave based on frequency
-      const amplitude = isPlaying ? 40 : 20;
-      const wavelength = Math.max(50, 800 / (frequency / 100));
-      const time = isPlaying ? Date.now() * 0.005 : 0;
+      const amplitude = isPlaying ? Math.max(30, frequency / 15) : Math.max(15, frequency / 30);
+      const wavelength = Math.max(40, 600 / (frequency / 100));
+      const time = isPlaying ? Date.now() * 0.008 : 0;
       
       for (let x = 0; x < width; x++) {
         const y = height / 2 + Math.sin((x / wavelength) * 2 * Math.PI + time) * amplitude;
@@ -49,18 +51,67 @@ export const FrequencyVisualizer = ({ frequency, isPlaying }: FrequencyVisualize
       
       ctx.stroke();
       
-      // Add frequency bars
-      const barCount = 20;
+      // Secondary wave for depth
+      if (isPlaying) {
+        ctx.strokeStyle = "rgba(196, 181, 253, 0.4)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        
+        for (let x = 0; x < width; x++) {
+          const y = height / 2 + Math.sin((x / wavelength) * 2 * Math.PI + time * 1.5) * (amplitude * 0.6);
+          if (x === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
+        }
+        
+        ctx.stroke();
+      }
+      
+      // Enhanced frequency bars with better animation
+      const barCount = 25;
       const barWidth = width / barCount;
       
       for (let i = 0; i < barCount; i++) {
-        const barHeight = Math.random() * (isPlaying ? frequency / 10 : frequency / 20) + 10;
+        const baseHeight = frequency / 20 + 10;
+        const dynamicHeight = isPlaying ? 
+          Math.sin(time * 0.01 + i * 0.3) * (frequency / 25) + baseHeight :
+          baseHeight * 0.5;
+        const barHeight = Math.abs(dynamicHeight);
         const x = i * barWidth;
         const y = height / 2 - barHeight / 2;
         
-        const alpha = isPlaying ? 0.6 : 0.3;
-        ctx.fillStyle = `rgba(147, 51, 234, ${alpha})`;
+        // Create gradient for each bar
+        const barGradient = ctx.createLinearGradient(x, y, x, y + barHeight);
+        barGradient.addColorStop(0, `rgba(147, 51, 234, ${isPlaying ? 0.8 : 0.4})`);
+        barGradient.addColorStop(0.5, `rgba(168, 85, 247, ${isPlaying ? 0.9 : 0.5})`);
+        barGradient.addColorStop(1, `rgba(196, 181, 253, ${isPlaying ? 0.7 : 0.3})`);
+        
+        ctx.fillStyle = barGradient;
         ctx.fillRect(x + 2, y, barWidth - 4, barHeight);
+        
+        // Add glow effect when playing
+        if (isPlaying) {
+          ctx.shadowColor = 'rgba(147, 51, 234, 0.5)';
+          ctx.shadowBlur = 10;
+          ctx.fillRect(x + 2, y, barWidth - 4, barHeight);
+          ctx.shadowBlur = 0;
+        }
+      }
+      
+      // Add particle effect when playing
+      if (isPlaying) {
+        for (let i = 0; i < 8; i++) {
+          const particleX = (time * 50 + i * 100) % width;
+          const particleY = height / 2 + Math.sin(time * 0.02 + i) * 40;
+          const size = Math.sin(time * 0.03 + i) * 3 + 2;
+          
+          ctx.fillStyle = `rgba(196, 181, 253, ${0.6 + Math.sin(time * 0.05 + i) * 0.4})`;
+          ctx.beginPath();
+          ctx.arc(particleX, particleY, size, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
       
       if (isPlaying) {
@@ -78,18 +129,27 @@ export const FrequencyVisualizer = ({ frequency, isPlaying }: FrequencyVisualize
   }, [frequency, isPlaying]);
 
   return (
-    <div className="relative">
+    <div className="relative overflow-hidden rounded-xl">
       <canvas
         ref={canvasRef}
         width={600}
-        height={120}
-        className="w-full h-32 bg-purple-900/20 rounded-lg border border-purple-800"
+        height={150}
+        className="w-full h-40 bg-gradient-to-r from-purple-900/30 via-black/50 to-purple-900/30 rounded-xl border border-purple-800/60 backdrop-blur-sm"
       />
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-20 h-20 rounded-full border-2 border-purple-400 bg-purple-500/20 flex items-center justify-center">
-          <span className="text-purple-300 font-mono text-sm">{frequency}Hz</span>
+        <div className={`w-24 h-24 rounded-full border-2 border-purple-400 bg-purple-500/20 flex items-center justify-center backdrop-blur-sm ${isPlaying ? 'animate-pulse' : ''}`}>
+          <div className="text-center">
+            <span className="text-purple-300 font-mono text-lg font-bold">{frequency}</span>
+            <div className="text-purple-400 text-xs">Hz</div>
+          </div>
         </div>
       </div>
+      
+      {/* Corner decorations */}
+      <div className="absolute top-2 left-2 w-3 h-3 bg-purple-400 rounded-full opacity-60 animate-pulse"></div>
+      <div className="absolute top-2 right-2 w-3 h-3 bg-violet-400 rounded-full opacity-60 animate-pulse" style={{ animationDelay: '1s' }}></div>
+      <div className="absolute bottom-2 left-2 w-3 h-3 bg-pink-400 rounded-full opacity-60 animate-pulse" style={{ animationDelay: '2s' }}></div>
+      <div className="absolute bottom-2 right-2 w-3 h-3 bg-indigo-400 rounded-full opacity-60 animate-pulse" style={{ animationDelay: '3s' }}></div>
     </div>
   );
 };
