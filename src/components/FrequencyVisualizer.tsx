@@ -100,12 +100,13 @@ export const FrequencyVisualizer = ({ frequency, isPlaying }: FrequencyVisualize
         }
       }
       
-      // Add particle effect when playing
+      // Add particle effect when playing - FIX: Ensure size is always positive
       if (isPlaying) {
         for (let i = 0; i < 8; i++) {
           const particleX = (time * 50 + i * 100) % width;
           const particleY = height / 2 + Math.sin(time * 0.02 + i) * 40;
-          const size = Math.sin(time * 0.03 + i) * 3 + 2;
+          const baseSize = Math.sin(time * 0.03 + i) * 3 + 2;
+          const size = Math.max(0.5, Math.abs(baseSize)); // Ensure size is always positive
           
           ctx.fillStyle = `rgba(196, 181, 253, ${0.6 + Math.sin(time * 0.05 + i) * 0.4})`;
           ctx.beginPath();

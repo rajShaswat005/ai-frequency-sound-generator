@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -10,14 +11,124 @@ interface WhiteNoiseTrack {
   description: string;
   icon: any;
   color: string;
-  soundUrl: string;
+  soundGenerator: (audioContext: AudioContext, gainNode: GainNode) => AudioBufferSourceNode;
 }
 
 export const WhiteNoisePlayer = () => {
   const [selectedTrack, setSelectedTrack] = useState<string>("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState([60]);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const sourceRef = useRef<AudioBufferSourceNode | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
+
+  // Generate different types of natural sounds
+  const generateWarmSunrise = (audioContext: AudioContext, gainNode: GainNode) => {
+    const bufferSize = audioContext.sampleRate * 10; // 10 seconds
+    const buffer = audioContext.createBuffer(2, bufferSize, audioContext.sampleRate);
+    
+    for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+      const channelData = buffer.getChannelData(channel);
+      for (let i = 0; i < bufferSize; i++) {
+        // Gentle morning sounds with bird-like chirps
+        const baseNoise = (Math.random() * 2 - 1) * 0.05;
+        const birdSound = Math.sin(i * 0.001 + Math.sin(i * 0.0001) * 5) * 0.1 * (Math.random() > 0.99 ? 1 : 0);
+        const windSound = Math.sin(i * 0.0005) * 0.03;
+        channelData[i] = baseNoise + birdSound + windSound;
+      }
+    }
+    
+    const source = audioContext.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    return source;
+  };
+
+  const generateIceland = (audioContext: AudioContext, gainNode: GainNode) => {
+    const bufferSize = audioContext.sampleRate * 12;
+    const buffer = audioContext.createBuffer(2, bufferSize, audioContext.sampleRate);
+    
+    for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+      const channelData = buffer.getChannelData(channel);
+      for (let i = 0; i < bufferSize; i++) {
+        // Arctic wind sounds
+        const windNoise = (Math.random() * 2 - 1) * 0.15 * Math.sin(i * 0.0003);
+        const lowFreqWind = Math.sin(i * 0.0001) * 0.08;
+        const iceCreaking = Math.sin(i * 0.0008) * 0.02 * (Math.random() > 0.995 ? 1 : 0);
+        channelData[i] = windNoise + lowFreqWind + iceCreaking;
+      }
+    }
+    
+    const source = audioContext.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    return source;
+  };
+
+  const generateCampingFire = (audioContext: AudioContext, gainNode: GainNode) => {
+    const bufferSize = audioContext.sampleRate * 8;
+    const buffer = audioContext.createBuffer(2, bufferSize, audioContext.sampleRate);
+    
+    for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+      const channelData = buffer.getChannelData(channel);
+      for (let i = 0; i < bufferSize; i++) {
+        // Crackling fire sounds
+        const baseNoise = (Math.random() * 2 - 1) * 0.1;
+        const crackle = Math.random() > 0.98 ? (Math.random() * 2 - 1) * 0.5 : 0;
+        const lowBurn = Math.sin(i * 0.0002) * 0.05;
+        channelData[i] = baseNoise + crackle + lowBurn;
+      }
+    }
+    
+    const source = audioContext.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    return source;
+  };
+
+  const generateSummerSeashore = (audioContext: AudioContext, gainNode: GainNode) => {
+    const bufferSize = audioContext.sampleRate * 15;
+    const buffer = audioContext.createBuffer(2, bufferSize, audioContext.sampleRate);
+    
+    for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+      const channelData = buffer.getChannelData(channel);
+      for (let i = 0; i < bufferSize; i++) {
+        // Ocean wave sounds
+        const waveBase = Math.sin(i * 0.0008) * 0.12;
+        const waveDetail = Math.sin(i * 0.003) * 0.05;
+        const seagull = Math.sin(i * 0.002 + Math.sin(i * 0.0001) * 10) * 0.03 * (Math.random() > 0.999 ? 1 : 0);
+        const foam = (Math.random() * 2 - 1) * 0.02;
+        channelData[i] = waveBase + waveDetail + seagull + foam;
+      }
+    }
+    
+    const source = audioContext.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    return source;
+  };
+
+  const generateMeditation = (audioContext: AudioContext, gainNode: GainNode) => {
+    const bufferSize = audioContext.sampleRate * 20;
+    const buffer = audioContext.createBuffer(2, bufferSize, audioContext.sampleRate);
+    
+    for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+      const channelData = buffer.getChannelData(channel);
+      for (let i = 0; i < bufferSize; i++) {
+        // Singing bowl and ambient tones
+        const bowl1 = Math.sin(i * 0.0004) * 0.08 * Math.exp(-i * 0.00001);
+        const bowl2 = Math.sin(i * 0.0006) * 0.06 * Math.exp(-i * 0.000008);
+        const ambient = Math.sin(i * 0.0001) * 0.03;
+        const softNoise = (Math.random() * 2 - 1) * 0.01;
+        channelData[i] = bowl1 + bowl2 + ambient + softNoise;
+      }
+    }
+    
+    const source = audioContext.createBufferSource();
+    source.buffer = buffer;
+    source.loop = true;
+    return source;
+  };
 
   const whiteNoiseTracks: WhiteNoiseTrack[] = [
     {
@@ -26,7 +137,7 @@ export const WhiteNoisePlayer = () => {
       description: "Gentle morning birds and soft wind sounds",
       icon: Sun,
       color: "from-orange-400 to-yellow-500",
-      soundUrl: "/audio/warm-sunrise.mp3" // You'll need to add actual audio files
+      soundGenerator: generateWarmSunrise
     },
     {
       id: "iceland",
@@ -34,7 +145,7 @@ export const WhiteNoisePlayer = () => {
       description: "Arctic winds and peaceful glacial sounds",
       icon: Mountain,
       color: "from-cyan-400 to-blue-500",
-      soundUrl: "/audio/iceland.mp3"
+      soundGenerator: generateIceland
     },
     {
       id: "camping-fire",
@@ -42,7 +153,7 @@ export const WhiteNoisePlayer = () => {
       description: "Crackling fire with night forest ambience",
       icon: Flame,
       color: "from-red-500 to-orange-600",
-      soundUrl: "/audio/camping-fire.mp3"
+      soundGenerator: generateCampingFire
     },
     {
       id: "summer-seashore",
@@ -50,7 +161,7 @@ export const WhiteNoisePlayer = () => {
       description: "Gentle waves and seagulls on a warm beach",
       icon: Shell,
       color: "from-blue-400 to-teal-500",
-      soundUrl: "/audio/summer-seashore.mp3"
+      soundGenerator: generateSummerSeashore
     },
     {
       id: "meditation",
@@ -58,7 +169,7 @@ export const WhiteNoisePlayer = () => {
       description: "Tibetan singing bowls and ambient tones",
       icon: Flower2,
       color: "from-purple-500 to-violet-600",
-      soundUrl: "/audio/meditation.mp3"
+      soundGenerator: generateMeditation
     }
   ];
 
@@ -75,60 +186,32 @@ export const WhiteNoisePlayer = () => {
     const track = whiteNoiseTracks.find(t => t.id === selectedTrack);
     if (!track) return;
 
-    // For demo purposes, we'll create a simple audio context with different frequency patterns
-    // In a real implementation, you would load actual audio files
-    const audioContext = new AudioContext();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    const noiseBuffer = audioContext.createBuffer(2, audioContext.sampleRate * 2, audioContext.sampleRate);
-    
-    // Generate different noise patterns based on selected track
-    for (let channel = 0; channel < noiseBuffer.numberOfChannels; channel++) {
-      const nowBuffering = noiseBuffer.getChannelData(channel);
-      for (let i = 0; i < noiseBuffer.length; i++) {
-        // Create different noise patterns for different tracks
-        switch (selectedTrack) {
-          case 'warm-sunrise':
-            nowBuffering[i] = (Math.random() * 2 - 1) * 0.1 * Math.sin(i * 0.001);
-            break;
-          case 'iceland':
-            nowBuffering[i] = (Math.random() * 2 - 1) * 0.15 * Math.cos(i * 0.0005);
-            break;
-          case 'camping-fire':
-            nowBuffering[i] = (Math.random() * 2 - 1) * 0.2 * (Math.random() > 0.95 ? 2 : 1);
-            break;
-          case 'summer-seashore':
-            nowBuffering[i] = (Math.random() * 2 - 1) * 0.12 * Math.sin(i * 0.002);
-            break;
-          case 'meditation':
-            nowBuffering[i] = (Math.random() * 2 - 1) * 0.08 * Math.sin(i * 0.0003);
-            break;
-          default:
-            nowBuffering[i] = Math.random() * 2 - 1;
-        }
-      }
+    if (!audioContextRef.current) {
+      audioContextRef.current = new AudioContext();
     }
 
-    const source = audioContext.createBufferSource();
-    source.buffer = noiseBuffer;
-    source.loop = true;
-    source.connect(gainNode);
+    const audioContext = audioContextRef.current;
+    const gainNode = audioContext.createGain();
     gainNode.connect(audioContext.destination);
     gainNode.gain.value = volume[0] / 100 * 0.3;
-    
+    gainNodeRef.current = gainNode;
+
+    const source = track.soundGenerator(audioContext, gainNode);
+    source.connect(gainNode);
     source.start();
-    audioRef.current = source as any;
+    
+    sourceRef.current = source;
     setIsPlaying(true);
   };
 
   const stopAudio = () => {
-    if (audioRef.current) {
+    if (sourceRef.current) {
       try {
-        (audioRef.current as any).stop();
+        sourceRef.current.stop();
       } catch (e) {
         console.log("Audio already stopped");
       }
-      audioRef.current = null;
+      sourceRef.current = null;
       setIsPlaying(false);
     }
   };
@@ -140,6 +223,12 @@ export const WhiteNoisePlayer = () => {
       startAudio();
     }
   };
+
+  useEffect(() => {
+    if (gainNodeRef.current) {
+      gainNodeRef.current.gain.value = volume[0] / 100 * 0.3;
+    }
+  }, [volume]);
 
   useEffect(() => {
     return () => {
