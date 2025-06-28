@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -292,7 +291,7 @@ export const WhiteNoisePlayer = () => {
               <p className="text-purple-300 text-sm mt-3">{selectedTrackData?.description}</p>
             </div>
 
-            {/* Status Indicator */}
+            {/* Status Indicator - Matching theme */}
             {isPlaying && (
               <div className="text-center p-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-lg border border-green-500/30">
                 <div className="flex items-center justify-center space-x-2 text-green-400">
@@ -302,9 +301,9 @@ export const WhiteNoisePlayer = () => {
               </div>
             )}
 
-            {/* Controls */}
+            {/* Controls - Consistent with EnhancedFrequencyPlayer */}
             <div className="flex items-center justify-center space-x-8">
-              {/* Play/Pause Button */}
+              {/* Play/Pause Button - Same as frequency player */}
               <div className="relative">
                 <div className={`absolute inset-0 rounded-full blur-lg ${
                   isPlaying 
@@ -324,7 +323,7 @@ export const WhiteNoisePlayer = () => {
                 </Button>
               </div>
 
-              {/* Volume Control */}
+              {/* Volume Control - Matching design */}
               <div className="flex items-center space-x-4 flex-1 max-w-xs">
                 <div className="p-2 bg-purple-600/20 rounded-lg">
                   <Volume2 className="h-5 w-5 text-purple-300" />

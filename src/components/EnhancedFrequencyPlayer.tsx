@@ -45,45 +45,72 @@ export const EnhancedFrequencyPlayer = ({
       {/* Visualizer */}
       <FrequencyVisualizer frequency={frequency} isPlaying={isPlaying} />
 
-      {/* Minimalist Control Panel */}
-      <Card className="bg-black/20 border-purple-800/20 backdrop-blur-sm">
-        <div className="p-8">
-          <div className="flex items-center justify-center space-x-12">
-            {/* Simple Play/Pause Button */}
-            <Button
-              onClick={onTogglePlay}
-              size="lg"
-              className={`w-20 h-20 rounded-full ${
-                isPlaying 
-                  ? 'bg-white/10 hover:bg-white/20 border-2 border-white/20' 
-                  : 'bg-purple-600/80 hover:bg-purple-600 border-2 border-purple-500'
-              } text-white transition-all duration-300`}
-            >
-              {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8 ml-1" />}
-            </Button>
-
-            {/* Minimal Volume Control */}
-            <div className="flex items-center space-x-4 w-48">
-              <Volume2 className="h-5 w-5 text-white/60" />
-              <Slider
-                value={volume}
-                onValueChange={onVolumeChange}
-                max={100}
-                step={1}
-                className="flex-1"
-              />
-              <span className="text-white/60 text-sm min-w-[3rem]">{volume[0]}%</span>
-            </div>
-          </div>
-
-          {/* Simple Status */}
+      {/* Themed Control Panel */}
+      <Card className="bg-gradient-to-r from-black/60 to-purple-900/40 border-purple-800/40 backdrop-blur-md">
+        <div className="p-6 space-y-6">
+          {/* Status Indicator */}
           {isPlaying && (
-            <div className="text-center mt-6">
-              <div className="text-green-400 text-sm font-light">
-                ● Playing {frequency} Hz frequency
+            <div className="text-center p-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-lg border border-green-500/30">
+              <div className="flex items-center justify-center space-x-2 text-green-400">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="font-medium">Playing {frequency} Hz frequency</span>
               </div>
             </div>
           )}
+
+          {/* Controls */}
+          <div className="flex items-center justify-center space-x-8">
+            {/* Play/Pause Button - Consistent with WhiteNoisePlayer */}
+            <div className="relative">
+              <div className={`absolute inset-0 rounded-full blur-lg ${
+                isPlaying 
+                  ? 'bg-red-500/30 animate-pulse' 
+                  : 'bg-green-500/30'
+              }`}></div>
+              <Button
+                onClick={onTogglePlay}
+                size="lg"
+                className={`relative ${
+                  isPlaying 
+                    ? 'bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600' 
+                    : 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600'
+                } text-white rounded-full p-6 shadow-2xl transform transition-all duration-300 hover:scale-110`}
+              >
+                {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8 ml-1" />}
+              </Button>
+            </div>
+
+            {/* Volume Control - Consistent styling */}
+            <div className="flex items-center space-x-4 flex-1 max-w-xs">
+              <div className="p-2 bg-purple-600/20 rounded-lg">
+                <Volume2 className="h-5 w-5 text-purple-300" />
+              </div>
+              <div className="flex-1 space-y-2">
+                <Slider
+                  value={volume}
+                  onValueChange={onVolumeChange}
+                  max={100}
+                  step={1}
+                  className="flex-1"
+                />
+                <div className="flex justify-between text-xs text-purple-400">
+                  <span>Quiet</span>
+                  <span className="font-medium">{volume[0]}%</span>
+                  <span>Loud</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Instructions */}
+          <div className="text-center">
+            <p className="text-purple-300 text-sm leading-relaxed">
+              {isPlaying 
+                ? 'Immerse yourself in the healing frequency designed for your emotional state.' 
+                : 'Click play to begin your personalized sound therapy session.'
+              }
+            </p>
+          </div>
         </div>
       </Card>
     </div>
