@@ -1,9 +1,8 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
-import { Play, Pause, Volume2, Sun, Mountain, Flame, Shell, Lotus, Waves } from "lucide-react";
+import { Play, Pause, Volume2, Sun, Mountain, Flame, Shell, Flower2, Waves } from "lucide-react";
 
 interface WhiteNoiseTrack {
   id: string;
@@ -57,7 +56,7 @@ export const WhiteNoisePlayer = () => {
       id: "meditation",
       name: "Meditation",
       description: "Tibetan singing bowls and ambient tones",
-      icon: Lotus,
+      icon: Flower2,
       color: "from-purple-500 to-violet-600",
       soundUrl: "/audio/meditation.mp3"
     }

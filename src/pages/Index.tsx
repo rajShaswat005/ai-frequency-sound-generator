@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Play, Pause, Volume2, Waves, Brain, Heart, Sun, Mountain, Flame, Shell, Lotus } from "lucide-react";
+import { Play, Pause, Volume2, Waves, Brain, Heart, Sun, Mountain, Flame, Shell, Flower2 } from "lucide-react";
 import { FrequencyVisualizer } from "@/components/FrequencyVisualizer";
 import { MoodButtons } from "@/components/MoodButtons";
 import { WhiteNoisePlayer } from "@/components/WhiteNoisePlayer";
