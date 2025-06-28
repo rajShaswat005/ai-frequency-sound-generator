@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Play, Pause, Volume2, Waves, Brain, Heart, Mic, MicOff } from "lucide-react";
+import { Play, Pause, Volume2, Waves, Brain, Heart } from "lucide-react";
 import { FrequencyVisualizer } from "@/components/FrequencyVisualizer";
 import { MoodButtons } from "@/components/MoodButtons";
 
@@ -16,7 +16,6 @@ const Index = () => {
   const [volume, setVolume] = useState([50]);
   const [selectedMood, setSelectedMood] = useState("");
   const [activeTab, setActiveTab] = useState("mood-input");
-  const [isListening, setIsListening] = useState(false);
   
   const audioContextRef = useRef<AudioContext | null>(null);
   const oscillatorRef = useRef<OscillatorNode | null>(null);
@@ -68,37 +67,6 @@ const Index = () => {
     setSelectedMood(detectedMood);
     setFrequency(moodFrequencies[detectedMood as keyof typeof moodFrequencies].freq || 440);
     setActiveTab("frequency");
-  };
-
-  const startVoiceRecognition = () => {
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
-      const recognition = new SpeechRecognition();
-      
-      recognition.continuous = false;
-      recognition.interimResults = false;
-      recognition.lang = 'en-US';
-      
-      recognition.onstart = () => {
-        setIsListening(true);
-      };
-      
-      recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
-        setMoodText(transcript);
-        setIsListening(false);
-      };
-      
-      recognition.onerror = () => {
-        setIsListening(false);
-      };
-      
-      recognition.onend = () => {
-        setIsListening(false);
-      };
-      
-      recognition.start();
-    }
   };
 
   const startAudio = () => {
@@ -190,24 +158,24 @@ const Index = () => {
         </div>
 
         {/* Main Tabs */}
-        <Card className="bg-gradient-to-br from-purple-950/80 via-purple-900/50 to-black/80 border-purple-800/50 backdrop-blur-sm shadow-2xl">
+        <Card className="bg-black/40 border-purple-900/60 backdrop-blur-md shadow-2xl">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-purple-900/30 border-purple-700/50">
+            <TabsList className="grid w-full grid-cols-3 bg-black/60 border-purple-800/60">
               <TabsTrigger 
                 value="mood-input" 
-                className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+                className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white"
               >
                 Mood Input
               </TabsTrigger>
               <TabsTrigger 
                 value="frequency" 
-                className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+                className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white"
               >
                 Frequency
               </TabsTrigger>
               <TabsTrigger 
                 value="information" 
-                className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+                className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white"
               >
                 Information
               </TabsTrigger>
@@ -223,38 +191,6 @@ const Index = () => {
               </div>
               
               <div className="space-y-8">
-                {/* Voice Controls */}
-                <div className="flex items-center justify-center space-x-4">
-                  <Button
-                    onClick={startVoiceRecognition}
-                    disabled={isListening}
-                    className={`${
-                      isListening 
-                        ? 'bg-red-500 hover:bg-red-600' 
-                        : 'bg-purple-600 hover:bg-purple-700'
-                    } text-white px-6 py-2 rounded-full transition-all duration-200`}
-                  >
-                    {isListening ? (
-                      <>
-                        <MicOff className="h-4 w-4 mr-2" />
-                        Listening...
-                      </>
-                    ) : (
-                      <>
-                        <Mic className="h-4 w-4 mr-2" />
-                        Voice Input
-                      </>
-                    )}
-                  </Button>
-                  {isListening && (
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse"></div>
-                      <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                      <div className="w-2 h-2 bg-red-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
-                    </div>
-                  )}
-                </div>
-
                 {/* Mood Selection Buttons */}
                 <div className="space-y-4">
                   <p className="text-purple-300 text-sm font-medium text-center">Select your current mood:</p>
@@ -272,7 +208,7 @@ const Index = () => {
                       placeholder="Tell me about your current emotional state... The more you share, the better I can personalize your healing frequency. Describe your feelings, what's on your mind, or what kind of support you need right now."
                       value={moodText}
                       onChange={(e) => setMoodText(e.target.value)}
-                      className="bg-purple-900/30 border-purple-700/50 text-white placeholder:text-purple-400 min-h-40 text-base leading-relaxed focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 resize-none"
+                      className="bg-black/40 border-purple-800/60 text-white placeholder:text-purple-400 min-h-40 text-base leading-relaxed focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 resize-none"
                       rows={8}
                     />
                     <div className="absolute bottom-3 right-3 text-xs text-purple-400">
@@ -307,7 +243,7 @@ const Index = () => {
                   <div className="text-center space-y-4">
                     <div className="relative inline-block">
                       <div className={`absolute inset-0 bg-gradient-to-r ${currentMoodData?.color || 'from-purple-500 to-violet-500'} rounded-full blur-xl opacity-30 animate-pulse`}></div>
-                      <div className="relative bg-gradient-to-br from-purple-900/50 to-black/50 rounded-2xl p-6 border border-purple-700/30">
+                      <div className="relative bg-black/60 rounded-2xl p-6 border border-purple-800/40">
                         <div className="text-4xl font-bold text-white mb-2">{frequency} Hz</div>
                         {selectedMood && currentMoodData && (
                           <div className="space-y-3">
@@ -315,7 +251,7 @@ const Index = () => {
                               {selectedMood}
                             </div>
                             <p className="text-purple-300 text-sm font-medium">{currentMoodData.desc}</p>
-                            <div className="bg-purple-900/30 rounded-lg p-4 mt-4">
+                            <div className="bg-black/40 rounded-lg p-4 mt-4">
                               <h4 className="text-purple-200 font-medium mb-2">Sound Description:</h4>
                               <p className="text-purple-300 text-sm leading-relaxed">
                                 {currentMoodData.soundDesc}
@@ -340,10 +276,10 @@ const Index = () => {
                     )}
                   </div>
                   
-                  <div className="bg-gradient-to-r from-purple-900/30 to-black/30 rounded-xl p-6 border border-purple-700/30">
+                  <div className="bg-black/50 rounded-xl p-6 border border-purple-800/40">
                     {/* Current Playing Frequency Display */}
                     {isPlaying && (
-                      <div className="text-center mb-4 p-3 bg-purple-800/20 rounded-lg border border-purple-700/30">
+                      <div className="text-center mb-4 p-3 bg-black/40 rounded-lg border border-purple-800/40">
                         <div className="flex items-center justify-center space-x-2 text-green-400">
                           <Waves className="h-4 w-4 animate-pulse" />
                           <span className="font-medium">Now Playing: {frequency} Hz</span>
@@ -413,7 +349,7 @@ const Index = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <Card className="bg-gradient-to-br from-purple-950/60 to-black/60 border-purple-800/30 backdrop-blur-sm p-6">
+                <Card className="bg-black/50 border-purple-900/50 backdrop-blur-sm p-6">
                   <div className="flex items-start space-x-4">
                     <div className="p-2 bg-purple-600/20 rounded-lg">
                       <Brain className="h-5 w-5 text-purple-400" />
@@ -427,7 +363,7 @@ const Index = () => {
                   </div>
                 </Card>
                 
-                <Card className="bg-gradient-to-br from-purple-950/60 to-black/60 border-purple-800/30 backdrop-blur-sm p-6">
+                <Card className="bg-black/50 border-purple-900/50 backdrop-blur-sm p-6">
                   <div className="flex items-start space-x-4">
                     <div className="p-2 bg-violet-600/20 rounded-lg">
                       <Heart className="h-5 w-5 text-violet-400" />
@@ -442,7 +378,7 @@ const Index = () => {
                 </Card>
               </div>
 
-              <Card className="bg-gradient-to-br from-indigo-950/40 to-purple-950/40 border-indigo-800/30 backdrop-blur-sm p-6">
+              <Card className="bg-black/50 border-indigo-900/50 backdrop-blur-sm p-6">
                 <h3 className="font-semibold text-indigo-200 mb-4 flex items-center space-x-2">
                   <Waves className="h-5 w-5" />
                   <span>Therapy Tips</span>
