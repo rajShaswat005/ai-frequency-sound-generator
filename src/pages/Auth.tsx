@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthForm } from '@/components/AuthForm';
 import { useAuth } from '@/hooks/useAuth';
+import { Navigation } from '@/components/Navigation';
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -23,8 +24,13 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <AuthForm onSuccess={() => navigate('/')} />
+    <div className="min-h-screen flex flex-col bg-gray-50 px-4">
+      <div className="p-4">
+        <Navigation />
+      </div>
+      <div className="flex-1 flex items-center justify-center">
+        <AuthForm onSuccess={() => navigate('/')} />
+      </div>
     </div>
   );
 };
