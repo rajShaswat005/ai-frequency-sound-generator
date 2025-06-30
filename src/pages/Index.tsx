@@ -4,10 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { AuthButton } from "@/components/AuthButton";
 import { Button } from "@/components/ui/button";
-import EnhancedFrequencyPlayer from "@/components/EnhancedFrequencyPlayer";
-import WhiteNoisePlayer from "@/components/WhiteNoisePlayer";
-import FrequencyVisualizer from "@/components/FrequencyVisualizer";
-import MoodButtons from "@/components/MoodButtons";
+import { EnhancedFrequencyPlayer } from "@/components/EnhancedFrequencyPlayer";
+import { WhiteNoisePlayer } from "@/components/WhiteNoisePlayer";
+import { FrequencyVisualizer } from "@/components/FrequencyVisualizer";
+import { MoodButtons } from "@/components/MoodButtons";
 import { LogIn } from "lucide-react";
 
 const Index = () => {
