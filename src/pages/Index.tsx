@@ -14,6 +14,40 @@ const Index = () => {
   const { isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
   const [frequency, setFrequency] = useState(528);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState([50]);
+  const [selectedMood, setSelectedMood] = useState("");
+
+  // Mood to frequency mapping
+  const moodFrequencies = {
+    calm: 528,
+    anxious: 396,
+    angry: 285,
+    sad: 174,
+    happy: 741,
+    energetic: 963,
+    peaceful: 432,
+    stressed: 528
+  };
+
+  const handleMoodSelect = (mood: string) => {
+    setSelectedMood(mood);
+    const moodFreq = moodFrequencies[mood as keyof typeof moodFrequencies] || 528;
+    setFrequency(moodFreq);
+  };
+
+  const handleTogglePlay = () => {
+    setIsPlaying(!isPlaying);
+  };
+
+  const handleVolumeChange = (newVolume: number[]) => {
+    setVolume(newVolume);
+  };
+
+  // Mock mood data for the EnhancedFrequencyPlayer
+  const currentMoodData = selectedMood ? {
+    desc: `Frequency designed to help with ${selectedMood} feelings`
+  } : null;
 
   if (loading) {
     return (
@@ -52,15 +86,20 @@ const Index = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="space-y-6">
               <EnhancedFrequencyPlayer 
-                frequency={frequency} 
-                onFrequencyChange={setFrequency} 
+                frequency={frequency}
+                isPlaying={isPlaying}
+                volume={volume}
+                onVolumeChange={handleVolumeChange}
+                onTogglePlay={handleTogglePlay}
+                selectedMood={selectedMood}
+                currentMoodData={currentMoodData}
               />
               <WhiteNoisePlayer />
             </div>
             
             <div className="space-y-6">
-              <FrequencyVisualizer frequency={frequency} />
-              <MoodButtons onMoodSelect={setFrequency} />
+              <FrequencyVisualizer frequency={frequency} isPlaying={isPlaying} />
+              <MoodButtons selectedMood={selectedMood} onMoodSelect={handleMoodSelect} />
             </div>
           </div>
         </div>
