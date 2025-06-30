@@ -9,6 +9,7 @@ import { FrequencyVisualizer } from "@/components/FrequencyVisualizer";
 import { MoodButtons } from "@/components/MoodButtons";
 import { WhiteNoisePlayer } from "@/components/WhiteNoisePlayer";
 import { EnhancedFrequencyPlayer } from "@/components/EnhancedFrequencyPlayer";
+import AuthButton from "@/components/AuthButton";
 
 const Index = () => {
   const [moodText, setMoodText] = useState("");
@@ -129,6 +130,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900 text-white p-4 relative overflow-hidden">
+      {/* Add AuthButton at top right corner */}
+      <div className="absolute top-4 right-4 z-50">
+        <AuthButton />
+      </div>
+
       {/* Enhanced animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
