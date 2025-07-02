@@ -9,6 +9,9 @@ import { FrequencyVisualizer } from "@/components/FrequencyVisualizer";
 import { MoodButtons } from "@/components/MoodButtons";
 import { WhiteNoisePlayer } from "@/components/WhiteNoisePlayer";
 import { EnhancedFrequencyPlayer } from "@/components/EnhancedFrequencyPlayer";
+import { EnhancedAudioEngine } from "@/components/EnhancedAudioEngine";
+import { PlayerControlBar } from "@/components/PlayerControlBar";
+import { PresetFrequencies } from "@/components/PresetFrequencies";
 import AuthButton from "@/components/AuthButton";
 
 const Index = () => {
@@ -18,6 +21,13 @@ const Index = () => {
   const [volume, setVolume] = useState([50]);
   const [selectedMood, setSelectedMood] = useState("");
   const [activeTab, setActiveTab] = useState("mood-input");
+  const [waveform, setWaveform] = useState<'sine' | 'triangle' | 'sawtooth' | 'square'>('sine');
+  const [effects, setEffects] = useState({
+    reverb: 0.3,
+    lowPass: 0.4,
+    vibrato: 0.1
+  });
+  const [currentTrackName, setCurrentTrackName] = useState("");
   
   const audioContextRef = useRef<AudioContext | null>(null);
   const oscillatorRef = useRef<OscillatorNode | null>(null);
@@ -67,69 +77,49 @@ const Index = () => {
     
     const detectedMood = selectedMood || analyzeMood(moodText);
     setSelectedMood(detectedMood);
-    setFrequency(moodFrequencies[detectedMood as keyof typeof moodFrequencies].freq || 440);
+    const newFreq = moodFrequencies[detectedMood as keyof typeof moodFrequencies].freq || 440;
+    setFrequency(newFreq);
+    setCurrentTrackName(`${newFreq} Hz - ${detectedMood.charAt(0).toUpperCase() + detectedMood.slice(1)} Frequency`);
     setActiveTab("frequency");
   };
 
-  const startAudio = () => {
-    if (!audioContextRef.current) {
-      audioContextRef.current = new AudioContext();
-    }
-
-    if (oscillatorRef.current) {
-      oscillatorRef.current.stop();
-    }
-
-    const oscillator = audioContextRef.current.createOscillator();
-    const gainNode = audioContextRef.current.createGain();
-
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContextRef.current.destination);
-
-    oscillator.frequency.value = frequency;
-    oscillator.type = 'sine';
-    gainNode.gain.value = volume[0] / 100;
-
-    oscillator.start();
-    oscillatorRef.current = oscillator;
-    gainNodeRef.current = gainNode;
-    setIsPlaying(true);
-  };
-
-  const stopAudio = () => {
-    if (oscillatorRef.current) {
-      oscillatorRef.current.stop();
-      oscillatorRef.current = null;
-      setIsPlaying(false);
-    }
+  const handlePresetSelect = (freq: number, name: string) => {
+    setFrequency(freq);
+    setCurrentTrackName(name);
+    setActiveTab("frequency");
   };
 
   const toggleAudio = () => {
-    if (isPlaying) {
-      stopAudio();
-    } else {
-      startAudio();
-    }
+    setIsPlaying(!isPlaying);
   };
-
-  useEffect(() => {
-    if (gainNodeRef.current) {
-      gainNodeRef.current.gain.value = volume[0] / 100;
-    }
-  }, [volume]);
-
-  useEffect(() => {
-    return () => {
-      if (oscillatorRef.current) {
-        oscillatorRef.current.stop();
-      }
-    };
-  }, []);
 
   const currentMoodData = selectedMood ? moodFrequencies[selectedMood as keyof typeof moodFrequencies] : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900 text-white p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900 text-white p-4 relative overflow-hidden pb-32">
+      {/* Enhanced Audio Engine */}
+      <EnhancedAudioEngine
+        frequency={frequency}
+        isPlaying={isPlaying}
+        volume={volume[0]}
+        waveform={waveform}
+        effects={effects}
+      />
+
+      {/* Player Control Bar */}
+      <PlayerControlBar
+        isPlaying={isPlaying}
+        onTogglePlay={toggleAudio}
+        volume={volume}
+        onVolumeChange={setVolume}
+        frequency={frequency}
+        currentTrack={currentTrackName}
+        waveform={waveform}
+        onWaveformChange={setWaveform}
+        effects={effects}
+        onEffectsChange={setEffects}
+      />
+
       {/* Add AuthButton at top right corner */}
       <div className="absolute top-4 right-4 z-50">
         <AuthButton />
@@ -173,28 +163,34 @@ const Index = () => {
         {/* Main Tabs */}
         <Card className="bg-black/40 border-purple-900/60 backdrop-blur-md shadow-2xl">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4 bg-black/60 border-purple-800/60">
+            <TabsList className="grid w-full grid-cols-5 bg-black/60 border-purple-800/60">
               <TabsTrigger 
                 value="mood-input" 
-                className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white"
+                className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white text-xs"
               >
                 Mood Input
               </TabsTrigger>
               <TabsTrigger 
+                value="presets" 
+                className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white text-xs"
+              >
+                Presets
+              </TabsTrigger>
+              <TabsTrigger 
                 value="frequency" 
-                className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white"
+                className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white text-xs"
               >
                 Frequency
               </TabsTrigger>
               <TabsTrigger 
                 value="white-noise" 
-                className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white"
+                className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white text-xs"
               >
                 White Noise
               </TabsTrigger>
               <TabsTrigger 
                 value="information" 
-                className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white"
+                className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white text-xs"
               >
                 Information
               </TabsTrigger>
@@ -248,13 +244,25 @@ const Index = () => {
               </div>
             </TabsContent>
 
+            {/* New Presets Tab */}
+            <TabsContent value="presets" className="space-y-6 p-8">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">✨</span>
+                </div>
+                <h2 className="text-2xl font-semibold text-purple-200">Healing Frequency Presets</h2>
+              </div>
+              
+              <PresetFrequencies onSelectFrequency={handlePresetSelect} />
+            </TabsContent>
+
             {/* Enhanced Frequency Tab */}
             <TabsContent value="frequency" className="space-y-6 p-8">
               {frequency ? (
                 <>
                   <div className="flex items-center space-x-3 mb-6">
                     <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">2</span>
+                      <span className="text-white font-bold text-sm">🎵</span>
                     </div>
                     <h2 className="text-2xl font-semibold text-purple-200">Your Personalized Frequency</h2>
                   </div>
@@ -274,7 +282,7 @@ const Index = () => {
                   <div className="text-purple-400 mb-4">
                     <Waves className="h-16 w-16 mx-auto mb-4 opacity-50" />
                   </div>
-                  <p className="text-purple-300 text-lg">Generate a frequency first by describing your mood in the Mood Input tab.</p>
+                  <p className="text-purple-300 text-lg">Generate a frequency first by describing your mood or selecting a preset.</p>
                 </div>
               )}
             </TabsContent>
@@ -283,7 +291,7 @@ const Index = () => {
             <TabsContent value="white-noise" className="space-y-6 p-8">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">3</span>
+                  <span className="text-white font-bold text-sm">🌊</span>
                 </div>
                 <h2 className="text-2xl font-semibold text-purple-200">Natural White Noise</h2>
               </div>
