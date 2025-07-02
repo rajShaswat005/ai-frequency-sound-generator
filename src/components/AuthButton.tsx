@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { LogIn, User as UserIcon, AlertCircle, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import UsernameForm from "./UsernameForm";
 
 const AuthButton = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -17,18 +18,29 @@ const AuthButton = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{email?: string; password?: string; general?: string}>({});
+  const [showUsernameForm, setShowUsernameForm] = useState(false);
+  const [userProfile, setUserProfile] = useState<{username?: string} | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        checkUserProfile(session.user.id);
+      }
     });
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          checkUserProfile(session.user.id);
+        } else {
+          setUserProfile(null);
+        }
         
         // Show success message for sign in
         if (event === 'SIGNED_IN') {
@@ -43,6 +55,30 @@ const AuthButton = () => {
 
     return () => subscription.unsubscribe();
   }, [toast]);
+
+  const checkUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('id', userId)
+        .single();
+      
+      if (error) {
+        console.error("Error fetching profile:", error);
+        return;
+      }
+      
+      setUserProfile(data);
+      
+      // If user doesn't have a username, show the username form
+      if (!data?.username) {
+        setShowUsernameForm(true);
+      }
+    } catch (error) {
+      console.error("Profile check error:", error);
+    }
+  };
 
   const validateForm = () => {
     const newErrors: {email?: string; password?: string} = {};
@@ -153,6 +189,8 @@ const AuthButton = () => {
           title: "Signed out successfully",
           description: "You have been logged out.",
         });
+        setShowUsernameForm(false);
+        setUserProfile(null);
       }
     } catch (error) {
       console.error("Sign out error:", error);
@@ -166,20 +204,36 @@ const AuthButton = () => {
     setPassword("");
   };
 
+  const handleUsernameComplete = () => {
+    setShowUsernameForm(false);
+    // Refresh the profile to get the updated username
+    if (user) {
+      checkUserProfile(user.id);
+    }
+  };
+
   if (user) {
     return (
-      <div className="flex items-center space-x-2">
-        <UserIcon className="h-4 w-4 text-purple-300" />
-        <span className="text-purple-300 text-sm">{user.email}</span>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleSignOut}
-          className="text-purple-300 hover:text-white hover:bg-purple-800/50"
-        >
-          Sign Out
-        </Button>
-      </div>
+      <>
+        <div className="flex items-center space-x-2">
+          <UserIcon className="h-4 w-4 text-purple-300" />
+          <span className="text-purple-300 text-sm">
+            {userProfile?.username || user.email}
+          </span>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleSignOut}
+            className="text-purple-300 hover:text-white hover:bg-purple-800/50"
+          >
+            Sign Out
+          </Button>
+        </div>
+        
+        {showUsernameForm && (
+          <UsernameForm onComplete={handleUsernameComplete} />
+        )}
+      </>
     );
   }
 
