@@ -30,15 +30,6 @@ const AuthButton = () => {
       (event, session) => {
         setUser(session?.user ?? null);
         
-        // Show success message for sign up
-        if (event === 'SIGNED_UP') {
-          toast({
-            title: "Account created successfully!",
-            description: "You can now use all features of the app.",
-            duration: 4000,
-          });
-        }
-        
         // Show success message for sign in
         if (event === 'SIGNED_IN') {
           toast({
@@ -129,10 +120,10 @@ const AuthButton = () => {
           return;
         }
         
-        // Success - show message and optionally switch to login
+        // Success - show message and close dialog
         toast({
-          title: "Check your email!",
-          description: "We've sent you a confirmation link to complete your registration.",
+          title: "Account created successfully!",
+          description: "Please check your email for a confirmation link to complete your registration.",
           duration: 6000,
         });
         
