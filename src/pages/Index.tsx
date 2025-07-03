@@ -10,7 +10,7 @@ import { MoodButtons } from "@/components/MoodButtons";
 import { EnhancedWhiteNoisePlayer } from "@/components/EnhancedWhiteNoisePlayer";
 import { EnhancedFrequencyPlayer } from "@/components/EnhancedFrequencyPlayer";
 import { EnhancedAudioEngine } from "@/components/EnhancedAudioEngine";
-import { EnhancedPlayerControlBar } from "@/components/EnhancedPlayerControlBar";
+import { PlayerControlBar } from "@/components/player/PlayerControlBar";
 import { PresetFrequencies } from "@/components/PresetFrequencies";
 import { useAudioQueue } from "@/hooks/useAudioQueue";
 import AuthButton from "@/components/AuthButton";
@@ -178,16 +178,39 @@ const Index = () => {
         ) : null;
       })()}
 
-      {/* Enhanced Player Control Bar */}
-      <EnhancedPlayerControlBar
-        audioQueue={audioQueue}
-        currentlyPlayingId={currentlyPlayingId}
-        onPlayTrack={playTrack}
-        onStopTrack={stopTrack}
-        onRemoveTrack={removeFromQueue}
-        onUpdateTrack={updateTrack}
-        globalVolume={volume}
-        onGlobalVolumeChange={setVolume}
+      {/* Player Control Bar */}
+      <PlayerControlBar
+        isPlaying={(() => {
+          const currentTrack = getCurrentTrack();
+          return currentTrack?.isPlaying || false;
+        })()}
+        onTogglePlay={() => {
+          const currentTrack = getCurrentTrack();
+          if (currentTrack) {
+            if (currentTrack.isPlaying) {
+              stopTrack(currentTrack.id);
+            } else {
+              playTrack(currentTrack.id);
+            }
+          } else if (audioQueue.length > 0) {
+            playTrack(audioQueue[0].id);
+          }
+        }}
+        volume={volume}
+        onVolumeChange={setVolume}
+        frequency={frequency}
+        currentTrack={(() => {
+          const currentTrack = getCurrentTrack();
+          return currentTrack?.name || `${frequency} Hz Frequency`;
+        })()}
+        waveform={waveform}
+        onWaveformChange={setWaveform}
+        effects={effects}
+        onEffectsChange={setEffects}
+        audioMode={(() => {
+          const currentTrack = getCurrentTrack();
+          return currentTrack?.type || null;
+        })()}
       />
 
       {/* Add AuthButton at top right corner */}
