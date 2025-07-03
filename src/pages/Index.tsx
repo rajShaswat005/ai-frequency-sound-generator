@@ -10,14 +10,14 @@ import { MoodButtons } from "@/components/MoodButtons";
 import { EnhancedWhiteNoisePlayer } from "@/components/EnhancedWhiteNoisePlayer";
 import { EnhancedFrequencyPlayer } from "@/components/EnhancedFrequencyPlayer";
 import { EnhancedAudioEngine } from "@/components/EnhancedAudioEngine";
-import { PlayerControlBar } from "@/components/PlayerControlBar";
+import { EnhancedPlayerControlBar } from "@/components/EnhancedPlayerControlBar";
 import { PresetFrequencies } from "@/components/PresetFrequencies";
+import { useAudioQueue } from "@/hooks/useAudioQueue";
 import AuthButton from "@/components/AuthButton";
 
 const Index = () => {
   const [moodText, setMoodText] = useState("");
   const [frequency, setFrequency] = useState(440);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState([50]);
   const [selectedMood, setSelectedMood] = useState("");
   const [activeTab, setActiveTab] = useState("mood-input");
@@ -27,12 +27,19 @@ const Index = () => {
     lowPass: 0.4,
     vibrato: 0.1
   });
-  const [currentTrackName, setCurrentTrackName] = useState("");
   
-  // Global audio state management
-  const [audioMode, setAudioMode] = useState<'frequency' | 'whitenoise' | null>(null);
-  const [isWhiteNoiseActive, setIsWhiteNoiseActive] = useState(false);
-  const [currentWhiteNoiseTrack, setCurrentWhiteNoiseTrack] = useState("");
+  // Enhanced audio queue management
+  const {
+    audioQueue,
+    currentlyPlayingId,
+    addToQueue,
+    removeFromQueue,
+    playTrack,
+    stopTrack,
+    stopAllTracks,
+    updateTrack,
+    getCurrentTrack,
+  } = useAudioQueue();
   
   const audioContextRef = useRef<AudioContext | null>(null);
   const oscillatorRef = useRef<OscillatorNode | null>(null);
@@ -84,49 +91,72 @@ const Index = () => {
     setSelectedMood(detectedMood);
     const newFreq = moodFrequencies[detectedMood as keyof typeof moodFrequencies].freq || 440;
     setFrequency(newFreq);
-    setCurrentTrackName(`${newFreq} Hz - ${detectedMood.charAt(0).toUpperCase() + detectedMood.slice(1)} Frequency`);
+    
+    const trackName = `${newFreq} Hz - ${detectedMood.charAt(0).toUpperCase() + detectedMood.slice(1)} Frequency`;
+    
+    // Add to queue
+    const trackId = addToQueue({
+      name: trackName,
+      type: 'frequency',
+      frequency: newFreq,
+      mood: detectedMood,
+      volume: volume[0],
+      waveform,
+      effects,
+    });
+    
     setActiveTab("frequency");
   };
 
   const handlePresetSelect = (freq: number, name: string) => {
     setFrequency(freq);
-    setCurrentTrackName(name);
+    
+    // Add to queue
+    addToQueue({
+      name,
+      type: 'frequency',
+      frequency: freq,
+      volume: volume[0],
+      waveform,
+      effects,
+    });
+    
     setActiveTab("frequency");
   };
 
-  // Global audio management functions
-  const startFrequencyMode = () => {
-    if (audioMode === 'whitenoise') {
-      setIsWhiteNoiseActive(false);
-    }
-    setAudioMode('frequency');
-    setIsPlaying(true);
+  const handleWhiteNoiseStart = (trackName: string) => {
+    // Add to queue and play immediately
+    const trackId = addToQueue({
+      name: trackName,
+      type: 'whitenoise',
+      volume: volume[0],
+    });
+    
+    // Small delay to ensure track is added before playing
+    setTimeout(() => playTrack(trackId), 50);
   };
 
-  const startWhiteNoiseMode = (trackName: string) => {
-    if (audioMode === 'frequency') {
-      setIsPlaying(false);
-    }
-    setAudioMode('whitenoise');
-    setIsWhiteNoiseActive(true);
-    setCurrentWhiteNoiseTrack(trackName);
-  };
-
-  const stopAllAudio = () => {
-    setIsPlaying(false);
-    setIsWhiteNoiseActive(false);
-    setAudioMode(null);
-    setCurrentWhiteNoiseTrack("");
-  };
-
-  const toggleAudio = () => {
-    if (audioMode === 'frequency') {
-      setIsPlaying(!isPlaying);
-    } else if (audioMode === 'whitenoise') {
-      setIsWhiteNoiseActive(!isWhiteNoiseActive);
+  const handleFrequencyPlay = () => {
+    if (!frequency) return;
+    
+    // Ensure current frequency is in queue
+    const trackName = `${frequency} Hz Frequency`;
+    const existingTrack = audioQueue.find(t => 
+      t.type === 'frequency' && t.frequency === frequency
+    );
+    
+    if (existingTrack) {
+      playTrack(existingTrack.id);
     } else {
-      // Start frequency mode by default
-      startFrequencyMode();
+      const trackId = addToQueue({
+        name: trackName,
+        type: 'frequency',
+        frequency,
+        volume: volume[0],
+        waveform,
+        effects,
+      });
+      setTimeout(() => playTrack(trackId), 50);
     }
   };
 
@@ -134,28 +164,30 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900 text-white p-4 relative overflow-hidden pb-32">
-      {/* Enhanced Audio Engine */}
-      <EnhancedAudioEngine
-        frequency={frequency}
-        isPlaying={isPlaying}
-        volume={volume[0]}
-        waveform={waveform}
-        effects={effects}
-      />
+      {/* Enhanced Audio Engine - Only for frequency tracks */}
+      {(() => {
+        const currentTrack = getCurrentTrack();
+        return currentTrack && currentTrack.type === 'frequency' && currentTrack.isPlaying ? (
+          <EnhancedAudioEngine
+            frequency={currentTrack.frequency!}
+            isPlaying={currentTrack.isPlaying}
+            volume={currentTrack.volume}
+            waveform={currentTrack.waveform || 'sine'}
+            effects={currentTrack.effects || effects}
+          />
+        ) : null;
+      })()}
 
-      {/* Player Control Bar */}
-      <PlayerControlBar
-        isPlaying={audioMode === 'frequency' ? isPlaying : isWhiteNoiseActive}
-        onTogglePlay={toggleAudio}
-        volume={volume}
-        onVolumeChange={setVolume}
-        frequency={frequency}
-        currentTrack={audioMode === 'whitenoise' ? currentWhiteNoiseTrack : currentTrackName}
-        waveform={waveform}
-        onWaveformChange={setWaveform}
-        effects={effects}
-        onEffectsChange={setEffects}
-        audioMode={audioMode}
+      {/* Enhanced Player Control Bar */}
+      <EnhancedPlayerControlBar
+        audioQueue={audioQueue}
+        currentlyPlayingId={currentlyPlayingId}
+        onPlayTrack={playTrack}
+        onStopTrack={stopTrack}
+        onRemoveTrack={removeFromQueue}
+        onUpdateTrack={updateTrack}
+        globalVolume={volume}
+        onGlobalVolumeChange={setVolume}
       />
 
       {/* Add AuthButton at top right corner */}
@@ -307,10 +339,13 @@ const Index = () => {
                   
                   <EnhancedFrequencyPlayer 
                     frequency={frequency}
-                    isPlaying={isPlaying}
+                    isPlaying={(() => {
+                      const currentTrack = getCurrentTrack();
+                      return currentTrack?.type === 'frequency' && currentTrack.frequency === frequency && currentTrack.isPlaying || false;
+                    })()}
                     volume={volume}
                     onVolumeChange={setVolume}
-                    onTogglePlay={toggleAudio}
+                    onTogglePlay={handleFrequencyPlay}
                     selectedMood={selectedMood}
                     currentMoodData={currentMoodData}
                   />
@@ -335,9 +370,12 @@ const Index = () => {
               </div>
               
               <EnhancedWhiteNoisePlayer 
-                onAudioStart={startWhiteNoiseMode}
-                onAudioStop={stopAllAudio}
-                isActive={isWhiteNoiseActive}
+                onAudioStart={handleWhiteNoiseStart}
+                onAudioStop={stopAllTracks}
+                isActive={(() => {
+                  const currentTrack = getCurrentTrack();
+                  return currentTrack?.type === 'whitenoise' && currentTrack.isPlaying || false;
+                })()}
                 volume={volume}
               />
             </TabsContent>

@@ -370,6 +370,12 @@ export const EnhancedWhiteNoisePlayer = ({ onAudioStart, onAudioStop, isActive, 
     const track = whiteNoiseTracks.find(t => t.id === trackId);
     if (track) {
       onAudioStart(track.name);
+      // Auto-start playing when track is selected
+      setTimeout(() => {
+        if (!isPlaying) {
+          startAudio();
+        }
+      }, 100);
     }
   };
 
