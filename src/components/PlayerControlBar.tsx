@@ -21,6 +21,7 @@ interface PlayerControlBarProps {
     vibrato: number;
   };
   onEffectsChange: (effects: { reverb: number; lowPass: number; vibrato: number }) => void;
+  audioMode?: 'frequency' | 'whitenoise' | null;
 }
 
 export const PlayerControlBar = ({
@@ -33,27 +34,34 @@ export const PlayerControlBar = ({
   waveform,
   onWaveformChange,
   effects,
-  onEffectsChange
+  onEffectsChange,
+  audioMode
 }: PlayerControlBarProps) => {
   const [showSettings, setShowSettings] = useState(false);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-black/95 via-purple-900/90 to-black/95 backdrop-blur-xl border-t border-purple-800/50">
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-black/98 via-purple-900/95 to-black/98 backdrop-blur-2xl border-t border-purple-500/30 shadow-2xl shadow-purple-500/10">
       <Card className="bg-transparent border-none shadow-none">
-        <div className="px-6 py-4">
+        <div className="px-6 py-5">
           {/* Top row - Track info and controls */}
-          <div className="flex items-center justify-between mb-4">
-            {/* Track Info */}
+          <div className="flex items-center justify-between mb-5">
+            {/* Enhanced Track Info */}
             <div className="flex items-center space-x-4 min-w-0 flex-1">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-500 rounded-lg flex items-center justify-center">
-                <div className="w-6 h-6 bg-white/20 rounded-full animate-pulse"></div>
+              <div className="relative">
+                <div className="w-14 h-14 bg-gradient-to-br from-purple-500 via-pink-500 to-violet-500 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/25">
+                  <div className={`w-7 h-7 rounded-full animate-pulse ${isPlaying ? 'bg-white/30' : 'bg-white/20'}`}></div>
+                </div>
+                {isPlaying && (
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-black animate-pulse"></div>
+                )}
               </div>
               <div className="min-w-0">
-                <p className="text-white font-medium truncate">
+                <p className="text-white font-semibold truncate text-lg">
                   {currentTrack || `${frequency} Hz Frequency`}
                 </p>
-                <p className="text-purple-300 text-sm truncate">
-                  Healing Sound Therapy
+                <p className="text-purple-300 text-sm truncate flex items-center space-x-2">
+                  <span>{audioMode === 'whitenoise' ? 'Natural Ambience' : 'Healing Sound Therapy'}</span>
+                  {isPlaying && <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>}
                 </p>
               </div>
             </div>
@@ -91,17 +99,25 @@ export const PlayerControlBar = ({
 
             {/* Right Controls */}
             <div className="flex items-center space-x-4 min-w-0 flex-1 justify-end">
-              {/* Volume Control */}
-              <div className="flex items-center space-x-2 max-w-32">
-                <Volume2 className="h-4 w-4 text-purple-300" />
-                <Slider
-                  value={volume}
-                  onValueChange={onVolumeChange}
-                  max={100}
-                  step={1}
-                  className="flex-1"
-                />
-                <span className="text-xs text-purple-300 w-8 text-center">{volume[0]}%</span>
+              {/* Enhanced Volume Control */}
+              <div className="flex items-center space-x-3 min-w-40">
+                <div className="p-2 bg-purple-600/20 rounded-lg shadow-inner">
+                  <Volume2 className="h-5 w-5 text-purple-300" />
+                </div>
+                <div className="flex-1 space-y-1">
+                  <Slider
+                    value={volume}
+                    onValueChange={onVolumeChange}
+                    max={100}
+                    step={1}
+                    className="flex-1"
+                  />
+                  <div className="flex justify-between text-xs text-purple-400">
+                    <span>0%</span>
+                    <span className="font-medium bg-purple-900/40 px-2 py-0.5 rounded-full">{volume[0]}%</span>
+                    <span>100%</span>
+                  </div>
+                </div>
               </div>
 
               {/* Settings */}

@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Play, Pause, Volume2, Waves, Brain, Heart, Sun, Mountain, Flame, Shell, Flower2 } from "lucide-react";
 import { FrequencyVisualizer } from "@/components/FrequencyVisualizer";
 import { MoodButtons } from "@/components/MoodButtons";
-import { WhiteNoisePlayer } from "@/components/WhiteNoisePlayer";
+import { EnhancedWhiteNoisePlayer } from "@/components/EnhancedWhiteNoisePlayer";
 import { EnhancedFrequencyPlayer } from "@/components/EnhancedFrequencyPlayer";
 import { EnhancedAudioEngine } from "@/components/EnhancedAudioEngine";
 import { PlayerControlBar } from "@/components/PlayerControlBar";
@@ -28,6 +28,11 @@ const Index = () => {
     vibrato: 0.1
   });
   const [currentTrackName, setCurrentTrackName] = useState("");
+  
+  // Global audio state management
+  const [audioMode, setAudioMode] = useState<'frequency' | 'whitenoise' | null>(null);
+  const [isWhiteNoiseActive, setIsWhiteNoiseActive] = useState(false);
+  const [currentWhiteNoiseTrack, setCurrentWhiteNoiseTrack] = useState("");
   
   const audioContextRef = useRef<AudioContext | null>(null);
   const oscillatorRef = useRef<OscillatorNode | null>(null);
@@ -89,8 +94,40 @@ const Index = () => {
     setActiveTab("frequency");
   };
 
+  // Global audio management functions
+  const startFrequencyMode = () => {
+    if (audioMode === 'whitenoise') {
+      setIsWhiteNoiseActive(false);
+    }
+    setAudioMode('frequency');
+    setIsPlaying(true);
+  };
+
+  const startWhiteNoiseMode = (trackName: string) => {
+    if (audioMode === 'frequency') {
+      setIsPlaying(false);
+    }
+    setAudioMode('whitenoise');
+    setIsWhiteNoiseActive(true);
+    setCurrentWhiteNoiseTrack(trackName);
+  };
+
+  const stopAllAudio = () => {
+    setIsPlaying(false);
+    setIsWhiteNoiseActive(false);
+    setAudioMode(null);
+    setCurrentWhiteNoiseTrack("");
+  };
+
   const toggleAudio = () => {
-    setIsPlaying(!isPlaying);
+    if (audioMode === 'frequency') {
+      setIsPlaying(!isPlaying);
+    } else if (audioMode === 'whitenoise') {
+      setIsWhiteNoiseActive(!isWhiteNoiseActive);
+    } else {
+      // Start frequency mode by default
+      startFrequencyMode();
+    }
   };
 
   const currentMoodData = selectedMood ? moodFrequencies[selectedMood as keyof typeof moodFrequencies] : null;
@@ -108,16 +145,17 @@ const Index = () => {
 
       {/* Player Control Bar */}
       <PlayerControlBar
-        isPlaying={isPlaying}
+        isPlaying={audioMode === 'frequency' ? isPlaying : isWhiteNoiseActive}
         onTogglePlay={toggleAudio}
         volume={volume}
         onVolumeChange={setVolume}
         frequency={frequency}
-        currentTrack={currentTrackName}
+        currentTrack={audioMode === 'whitenoise' ? currentWhiteNoiseTrack : currentTrackName}
         waveform={waveform}
         onWaveformChange={setWaveform}
         effects={effects}
         onEffectsChange={setEffects}
+        audioMode={audioMode}
       />
 
       {/* Add AuthButton at top right corner */}
@@ -296,7 +334,12 @@ const Index = () => {
                 <h2 className="text-2xl font-semibold text-purple-200">Natural White Noise</h2>
               </div>
               
-              <WhiteNoisePlayer />
+              <EnhancedWhiteNoisePlayer 
+                onAudioStart={startWhiteNoiseMode}
+                onAudioStop={stopAllAudio}
+                isActive={isWhiteNoiseActive}
+                volume={volume}
+              />
             </TabsContent>
 
             {/* Information Tab */}
