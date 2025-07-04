@@ -19,6 +19,8 @@ export interface AudioTrack {
 export const useAudioQueue = () => {
   const [audioQueue, setAudioQueue] = useState<AudioTrack[]>([]);
   const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(null);
+  const [isShuffled, setIsShuffled] = useState(false);
+  const [isRepeating, setIsRepeating] = useState(false);
 
   const addToQueue = useCallback((track: Omit<AudioTrack, 'id' | 'isPlaying'>) => {
     const newTrack: AudioTrack = {
@@ -97,9 +99,59 @@ export const useAudioQueue = () => {
     return audioQueue.filter(track => track.isPlaying);
   }, [audioQueue]);
 
+  const shuffleQueue = useCallback(() => {
+    setIsShuffled(!isShuffled);
+  }, [isShuffled]);
+
+  const toggleRepeat = useCallback(() => {
+    setIsRepeating(!isRepeating);
+  }, [isRepeating]);
+
+  const playNext = useCallback(() => {
+    if (audioQueue.length === 0) return;
+    
+    const currentIndex = audioQueue.findIndex(t => t.id === currentlyPlayingId);
+    let nextTrack;
+    
+    if (isShuffled) {
+      // Random next track
+      const availableTracks = audioQueue.filter(t => t.id !== currentlyPlayingId);
+      nextTrack = availableTracks[Math.floor(Math.random() * availableTracks.length)];
+    } else {
+      // Sequential next track
+      nextTrack = audioQueue[currentIndex + 1] || (isRepeating ? audioQueue[0] : null);
+    }
+    
+    if (nextTrack) {
+      playTrack(nextTrack.id);
+    }
+  }, [audioQueue, currentlyPlayingId, isShuffled, isRepeating, playTrack]);
+
+  const playPrevious = useCallback(() => {
+    if (audioQueue.length === 0) return;
+    
+    const currentIndex = audioQueue.findIndex(t => t.id === currentlyPlayingId);
+    let prevTrack;
+    
+    if (isShuffled) {
+      // Random previous track
+      const availableTracks = audioQueue.filter(t => t.id !== currentlyPlayingId);
+      prevTrack = availableTracks[Math.floor(Math.random() * availableTracks.length)];
+    } else {
+      // Sequential previous track
+      prevTrack = audioQueue[currentIndex - 1] || (isRepeating ? audioQueue[audioQueue.length - 1] : null);
+    }
+    
+    if (prevTrack) {
+      playTrack(prevTrack.id);
+    }
+  }, [audioQueue, currentlyPlayingId, isShuffled, isRepeating, playTrack]);
+
   return {
     audioQueue,
     currentlyPlayingId,
+    isShuffled,
+    isRepeating,
     addToQueue,
     removeFromQueue,
     playTrack,
@@ -109,5 +161,9 @@ export const useAudioQueue = () => {
     clearQueue,
     getCurrentTrack,
     getPlayingTracks,
+    shuffleQueue,
+    toggleRepeat,
+    playNext,
+    playPrevious,
   };
 };
