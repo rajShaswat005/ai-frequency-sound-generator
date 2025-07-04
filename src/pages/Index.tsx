@@ -10,7 +10,7 @@ import { MoodButtons } from "@/components/MoodButtons";
 import { EnhancedWhiteNoisePlayer } from "@/components/EnhancedWhiteNoisePlayer";
 import { EnhancedFrequencyPlayer } from "@/components/EnhancedFrequencyPlayer";
 import { EnhancedAudioEngine } from "@/components/EnhancedAudioEngine";
-import { PlayerControlBar } from "@/components/player/PlayerControlBar";
+import { StreamingMusicControl } from "@/components/StreamingMusicControl";
 import { PresetFrequencies } from "@/components/PresetFrequencies";
 import { useAudioQueue } from "@/hooks/useAudioQueue";
 import AuthButton from "@/components/AuthButton";
@@ -32,6 +32,8 @@ const Index = () => {
   const {
     audioQueue,
     currentlyPlayingId,
+    isShuffled,
+    isRepeating,
     addToQueue,
     removeFromQueue,
     playTrack,
@@ -39,6 +41,10 @@ const Index = () => {
     stopAllTracks,
     updateTrack,
     getCurrentTrack,
+    shuffleQueue,
+    toggleRepeat,
+    playNext,
+    playPrevious,
   } = useAudioQueue();
   
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -178,39 +184,22 @@ const Index = () => {
         ) : null;
       })()}
 
-      {/* Player Control Bar */}
-      <PlayerControlBar
-        isPlaying={(() => {
-          const currentTrack = getCurrentTrack();
-          return currentTrack?.isPlaying || false;
-        })()}
-        onTogglePlay={() => {
-          const currentTrack = getCurrentTrack();
-          if (currentTrack) {
-            if (currentTrack.isPlaying) {
-              stopTrack(currentTrack.id);
-            } else {
-              playTrack(currentTrack.id);
-            }
-          } else if (audioQueue.length > 0) {
-            playTrack(audioQueue[0].id);
-          }
-        }}
-        volume={volume}
-        onVolumeChange={setVolume}
-        frequency={frequency}
-        currentTrack={(() => {
-          const currentTrack = getCurrentTrack();
-          return currentTrack?.name || `${frequency} Hz Frequency`;
-        })()}
-        waveform={waveform}
-        onWaveformChange={setWaveform}
-        effects={effects}
-        onEffectsChange={setEffects}
-        audioMode={(() => {
-          const currentTrack = getCurrentTrack();
-          return currentTrack?.type || null;
-        })()}
+      {/* Streaming Music Control */}
+      <StreamingMusicControl
+        audioQueue={audioQueue}
+        currentlyPlayingId={currentlyPlayingId}
+        isShuffled={isShuffled}
+        isRepeating={isRepeating}
+        onPlayTrack={playTrack}
+        onStopTrack={stopTrack}
+        onRemoveTrack={removeFromQueue}
+        onUpdateTrack={updateTrack}
+        onPlayNext={playNext}
+        onPlayPrevious={playPrevious}
+        onShuffle={shuffleQueue}
+        onRepeat={toggleRepeat}
+        globalVolume={volume}
+        onGlobalVolumeChange={setVolume}
       />
 
       {/* Add AuthButton at top right corner */}
