@@ -10,6 +10,7 @@ import { MoodButtons } from "@/components/MoodButtons";
 import { EnhancedWhiteNoisePlayer } from "@/components/EnhancedWhiteNoisePlayer";
 import { EnhancedFrequencyPlayer } from "@/components/EnhancedFrequencyPlayer";
 import { EnhancedAudioEngine } from "@/components/EnhancedAudioEngine";
+import { WhiteNoiseEngine } from "@/components/WhiteNoiseEngine";
 import { StreamingMusicControl } from "@/components/StreamingMusicControl";
 import { PresetFrequencies } from "@/components/PresetFrequencies";
 import { useAudioQueue } from "@/hooks/useAudioQueue";
@@ -130,16 +131,17 @@ const Index = () => {
     setActiveTab("frequency");
   };
 
-  const handleWhiteNoiseStart = (trackName: string) => {
-    // Add to queue and play immediately
-    const trackId = addToQueue({
+  const handleWhiteNoiseSelect = (trackId: string, trackName: string) => {
+    // Add to queue and auto-play
+    const newTrackId = addToQueue({
       name: trackName,
       type: 'whitenoise',
       volume: volume[0],
+      whiteNoiseId: trackId, // Store the white noise track ID for reference
     });
     
     // Small delay to ensure track is added before playing
-    setTimeout(() => playTrack(trackId), 50);
+    setTimeout(() => playTrack(newTrackId), 50);
   };
 
   const handleFrequencyPlay = () => {
@@ -184,6 +186,18 @@ const Index = () => {
         ) : null;
       })()}
 
+      {/* White Noise Engine - Only for white noise tracks */}
+      {(() => {
+        const currentTrack = getCurrentTrack();
+        return currentTrack && currentTrack.type === 'whitenoise' && currentTrack.isPlaying ? (
+          <WhiteNoiseEngine
+            whiteNoiseId={currentTrack.whiteNoiseId!}
+            isPlaying={currentTrack.isPlaying}
+            volume={currentTrack.volume}
+          />
+        ) : null;
+      })()}
+
       {/* Streaming Music Control */}
       <StreamingMusicControl
         audioQueue={audioQueue}
@@ -217,29 +231,36 @@ const Index = () => {
       </div>
 
       <div className="max-w-4xl mx-auto space-y-8 relative z-10">
-        {/* Enhanced Header with New Logo Design */}
-        <div className="text-center space-y-4 pt-8">
-          <div className="flex items-center justify-center space-x-4 mb-6">
-            {/* New Logo Design matching the theme */}
+        {/* Header with Logo moved to top left */}
+        <div className="flex items-center justify-between pt-4 mb-8">
+          {/* Logo moved to top left */}
+          <div className="flex items-center space-x-4">
             <div className="relative">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 p-1 animate-pulse">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 p-1 animate-pulse">
                 <div className="w-full h-full rounded-full bg-black flex items-center justify-center">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 animate-pulse"></div>
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 animate-pulse"></div>
                 </div>
               </div>
-              <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 animate-bounce"></div>
+              <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 animate-bounce"></div>
             </div>
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent animate-pulse">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent animate-pulse">
               Aurix
             </h1>
           </div>
-          <p className="text-purple-300 text-lg font-light max-w-md mx-auto leading-relaxed animate-fade-in">
-            Transform your emotions into healing frequencies through the power of sound therapy
-          </p>
-          <div className="flex items-center justify-center space-x-2 text-purple-400 text-sm animate-fade-in">
-            <Heart className="h-4 w-4 animate-pulse" />
-            <span>Scientifically crafted for emotional wellness</span>
+          
+          {/* Centered title and description */}
+          <div className="text-center flex-1 mx-8">
+            <p className="text-purple-300 text-lg font-light max-w-md mx-auto leading-relaxed animate-fade-in">
+              Transform your emotions into healing frequencies through the power of sound therapy
+            </p>
+            <div className="flex items-center justify-center space-x-2 text-purple-400 text-sm animate-fade-in mt-2">
+              <Heart className="h-4 w-4 animate-pulse" />
+              <span>Scientifically crafted for emotional wellness</span>
+            </div>
           </div>
+          
+          {/* Empty space to balance the layout (AuthButton is positioned absolutely) */}
+          <div className="w-12"></div>
         </div>
 
         {/* Main Tabs */}
@@ -382,13 +403,11 @@ const Index = () => {
               </div>
               
               <EnhancedWhiteNoisePlayer 
-                onAudioStart={handleWhiteNoiseStart}
-                onAudioStop={stopAllTracks}
-                isActive={(() => {
+                onTrackSelect={handleWhiteNoiseSelect}
+                selectedTrackId={(() => {
                   const currentTrack = getCurrentTrack();
-                  return currentTrack?.type === 'whitenoise' && currentTrack.isPlaying || false;
+                  return currentTrack?.type === 'whitenoise' ? currentTrack.whiteNoiseId : undefined;
                 })()}
-                volume={volume}
               />
             </TabsContent>
 
@@ -445,6 +464,26 @@ const Index = () => {
                   </div>
                   <div className="text-indigo-300">
                     <strong>Practice:</strong> Regular sessions amplify the healing benefits
+                  </div>
+                </div>
+              </Card>
+
+              {/* About Us Section */}
+              <Card className="bg-black/50 border-purple-900/50 backdrop-blur-sm p-6">
+                <h3 className="font-semibold text-purple-200 mb-4 flex items-center space-x-2">
+                  <Heart className="h-5 w-5" />
+                  <span>About Us</span>
+                </h3>
+                <div className="text-center space-y-4">
+                  <div className="space-y-2">
+                    <h4 className="text-xl font-semibold text-purple-200">Shaswat Raj</h4>
+                    <p className="text-purple-400">Developer</p>
+                  </div>
+                  <div className="text-purple-300 text-sm leading-relaxed max-w-md mx-auto">
+                    <p>
+                      Passionate about creating meaningful digital experiences that promote wellness and healing. 
+                      Aurix represents my dedication to combining technology with therapeutic sound design for emotional well-being.
+                    </p>
                   </div>
                 </div>
               </Card>

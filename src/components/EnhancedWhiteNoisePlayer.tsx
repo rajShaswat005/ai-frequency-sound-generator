@@ -15,18 +15,11 @@ interface WhiteNoiseTrack {
 }
 
 interface EnhancedWhiteNoisePlayerProps {
-  onAudioStart: (trackName: string) => void;
-  onAudioStop: () => void;
-  isActive: boolean;
-  volume: number[];
+  onTrackSelect: (trackId: string, trackName: string) => void;
+  selectedTrackId?: string;
 }
 
-export const EnhancedWhiteNoisePlayer = ({ onAudioStart, onAudioStop, isActive, volume }: EnhancedWhiteNoisePlayerProps) => {
-  const [selectedTrack, setSelectedTrack] = useState<string>("");
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const sourceRef = useRef<AudioBufferSourceNode | null>(null);
-  const gainNodeRef = useRef<GainNode | null>(null);
+export const EnhancedWhiteNoisePlayer = ({ onTrackSelect, selectedTrackId }: EnhancedWhiteNoisePlayerProps) => {
 
   // Generate Ocean sounds
   const generateOcean = (audioContext: AudioContext, gainNode: GainNode) => {
@@ -353,90 +346,14 @@ export const EnhancedWhiteNoisePlayer = ({ onAudioStart, onAudioStop, isActive, 
     seasons: "Seasonal Moods"
   };
 
-  // Sync with external control
-  useEffect(() => {
-    if (isActive && !isPlaying && selectedTrack) {
-      startAudio();
-    } else if (!isActive && isPlaying) {
-      stopAudio();
-    }
-  }, [isActive]);
-
   const handleTrackSelect = (trackId: string) => {
-    if (isPlaying) {
-      stopAudio();
-    }
-    setSelectedTrack(trackId);
     const track = whiteNoiseTracks.find(t => t.id === trackId);
     if (track) {
-      onAudioStart(track.name);
-      // Auto-start playing when track is selected
-      setTimeout(() => {
-        if (!isPlaying) {
-          startAudio();
-        }
-      }, 100);
+      onTrackSelect(trackId, track.name);
     }
   };
 
-  const startAudio = () => {
-    if (!selectedTrack) return;
-    
-    const track = whiteNoiseTracks.find(t => t.id === selectedTrack);
-    if (!track) return;
-
-    if (!audioContextRef.current) {
-      audioContextRef.current = new AudioContext();
-    }
-
-    const audioContext = audioContextRef.current;
-    const gainNode = audioContext.createGain();
-    gainNode.connect(audioContext.destination);
-    gainNode.gain.value = volume[0] / 100 * 0.3;
-    gainNodeRef.current = gainNode;
-
-    const source = track.soundGenerator(audioContext, gainNode);
-    source.connect(gainNode);
-    source.start();
-    
-    sourceRef.current = source;
-    setIsPlaying(true);
-  };
-
-  const stopAudio = () => {
-    if (sourceRef.current) {
-      try {
-        sourceRef.current.stop();
-      } catch (e) {
-        console.log("Audio already stopped");
-      }
-      sourceRef.current = null;
-      setIsPlaying(false);
-      onAudioStop();
-    }
-  };
-
-  const toggleAudio = () => {
-    if (isPlaying) {
-      stopAudio();
-    } else {
-      startAudio();
-    }
-  };
-
-  useEffect(() => {
-    if (gainNodeRef.current) {
-      gainNodeRef.current.gain.value = volume[0] / 100 * 0.3;
-    }
-  }, [volume]);
-
-  useEffect(() => {
-    return () => {
-      stopAudio();
-    };
-  }, []);
-
-  const selectedTrackData = whiteNoiseTracks.find(t => t.id === selectedTrack);
+  const selectedTrackData = whiteNoiseTracks.find(t => t.id === selectedTrackId);
 
   return (
     <div className="space-y-8">
@@ -453,7 +370,7 @@ export const EnhancedWhiteNoisePlayer = ({ onAudioStart, onAudioStop, isActive, 
               .filter(track => track.category === categoryKey)
               .map((track) => {
                 const IconComponent = track.icon;
-                const isSelected = selectedTrack === track.id;
+                const isSelected = selectedTrackId === track.id;
                 
                 return (
                   <Card
@@ -490,58 +407,23 @@ export const EnhancedWhiteNoisePlayer = ({ onAudioStart, onAudioStop, isActive, 
         </div>
       ))}
 
-      {/* Player Interface */}
-      {selectedTrack && (
+      {/* Selected Track Display (No Controls) */}
+      {selectedTrackId && selectedTrackData && (
         <Card className="bg-gradient-to-r from-black/60 to-purple-900/40 border-purple-800/40 backdrop-blur-md">
-          <div className="p-6 space-y-6">
+          <div className="p-6 space-y-4">
             {/* Current Track Display */}
             <div className="text-center">
-              <div className={`inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r ${selectedTrackData?.color} rounded-full text-white shadow-lg`}>
-                {selectedTrackData && <selectedTrackData.icon className="h-5 w-5" />}
-                <span className="font-medium">{selectedTrackData?.name}</span>
+              <div className={`inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r ${selectedTrackData.color} rounded-full text-white shadow-lg`}>
+                <selectedTrackData.icon className="h-5 w-5" />
+                <span className="font-medium">{selectedTrackData.name}</span>
               </div>
-              <p className="text-purple-300 text-sm mt-3">{selectedTrackData?.description}</p>
-            </div>
-
-            {/* Status Indicator */}
-            {isPlaying && (
-              <div className="text-center p-3 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-lg border border-green-500/30">
-                <div className="flex items-center justify-center space-x-2 text-green-400">
-                  <Waves className="h-4 w-4 animate-pulse" />
-                  <span className="font-medium">Playing Natural Ambience</span>
-                </div>
-              </div>
-            )}
-
-            {/* Controls */}
-            <div className="flex items-center justify-center">
-              <div className="relative">
-                <div className={`absolute inset-0 rounded-full blur-lg ${
-                  isPlaying 
-                    ? 'bg-red-500/30 animate-pulse' 
-                    : 'bg-green-500/30'
-                }`}></div>
-                <Button
-                  onClick={toggleAudio}
-                  size="lg"
-                  className={`relative ${
-                    isPlaying 
-                      ? 'bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600' 
-                      : 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600'
-                  } text-white rounded-full p-6 shadow-2xl transform transition-all duration-300 hover:scale-110`}
-                >
-                  {isPlaying ? <Pause className="h-8 w-8" /> : <Play className="h-8 w-8 ml-1" />}
-                </Button>
-              </div>
+              <p className="text-purple-300 text-sm mt-3">{selectedTrackData.description}</p>
             </div>
 
             {/* Instructions */}
             <div className="text-center">
               <p className="text-purple-300 text-sm leading-relaxed">
-                {isPlaying 
-                  ? 'Immerse yourself in natural sounds designed to calm your mind and reduce stress.' 
-                  : 'Select a natural sound above and click play to begin your relaxation session.'
-                }
+                Use the main control bar at the bottom to play, pause, and control this natural ambience.
               </p>
             </div>
           </div>

@@ -14,6 +14,7 @@ export interface AudioTrack {
     lowPass: number;
     vibrato: number;
   };
+  whiteNoiseId?: string; // For white noise tracks to store the original track ID
 }
 
 export const useAudioQueue = () => {
