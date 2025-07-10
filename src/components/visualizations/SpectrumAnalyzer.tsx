@@ -40,12 +40,13 @@ export const SpectrumAnalyzer = ({
         const barWidth = width / barCount;
         const centerY = height / 2;
         
+        // Create frequency-based pattern (moved outside loop)
+        const freqRatio = frequency / 1000;
+        const normalizedFreq = Math.log(frequency / 100) / Math.log(10);
+        
         time += 0.05;
 
         for (let i = 0; i < barCount; i++) {
-          // Create frequency-based pattern
-          const freqRatio = frequency / 1000;
-          const normalizedFreq = Math.log(frequency / 100) / Math.log(10);
           
           // Calculate bar height with multiple frequency components
           const baseHeight = Math.sin(time + i * 0.3) * 30;

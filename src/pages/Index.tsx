@@ -171,7 +171,7 @@ const Index = () => {
   const currentMoodData = selectedMood ? moodFrequencies[selectedMood as keyof typeof moodFrequencies] : null;
 
   return (
-    <div className="min-h-screen bg-gradient-aurora text-white p-4 relative overflow-hidden pb-32 animate-wave">
+    <div className="min-h-screen bg-gradient-aurora text-foreground p-4 relative overflow-hidden pb-32">
       {/* Enhanced Audio Engine - Only for frequency tracks */}
       {(() => {
         const currentTrack = getCurrentTrack();
@@ -224,14 +224,14 @@ const Index = () => {
       {/* Ultra-Advanced Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Primary floating orbs */}
-        <div className="absolute top-20 left-10 w-96 h-96 bg-electric-blue/15 rounded-full blur-3xl animate-float shadow-electric"></div>
-        <div className="absolute bottom-20 right-10 w-128 h-128 bg-neon-purple/20 rounded-full blur-3xl animate-float shadow-neon" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-20 left-10 w-96 h-96 bg-electric-blue/15 rounded-full blur-3xl shadow-electric"></div>
+        <div className="absolute bottom-20 right-10 w-128 h-128 bg-neon-purple/20 rounded-full blur-3xl shadow-neon"></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-cyber-pink/10 rounded-full blur-3xl animate-rotate-slow shadow-cyber"></div>
         
         {/* Secondary cosmic elements */}
         <div className="absolute top-10 right-1/4 w-64 h-64 bg-plasma-green/12 rounded-full blur-2xl animate-pulse shadow-glow" style={{ animationDelay: '6s' }}></div>
         <div className="absolute bottom-10 left-1/4 w-72 h-72 bg-solar-orange/15 rounded-full blur-2xl animate-glow" style={{ animationDelay: '8s' }}></div>
-        <div className="absolute top-1/3 right-10 w-56 h-56 bg-cosmic-violet/18 rounded-full blur-2xl animate-float" style={{ animationDelay: '10s' }}></div>
+        <div className="absolute top-1/3 right-10 w-56 h-56 bg-cosmic-violet/18 rounded-full blur-2xl"></div>
         
         {/* Ambient grid patterns */}
         <div className="absolute inset-0 opacity-5">
@@ -249,7 +249,7 @@ const Index = () => {
         {/* Floating geometric shapes */}
         <div className="absolute top-32 left-1/3 w-8 h-8 border-2 border-primary/40 rotate-45 animate-rotate-slow"></div>
         <div className="absolute bottom-32 right-1/3 w-6 h-6 bg-accent/30 rounded-full animate-pulse-neon"></div>
-        <div className="absolute top-2/3 left-20 w-10 h-10 border border-electric-blue/50 rounded-full animate-float"></div>
+        <div className="absolute top-2/3 left-20 w-10 h-10 border border-electric-blue/50 rounded-full"></div>
       </div>
 
       <div className="max-w-4xl mx-auto space-y-8 relative z-10">
@@ -262,13 +262,13 @@ const Index = () => {
                 <div className="w-full h-full rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center border border-primary/30">
                   <div className="w-8 h-8 rounded-full bg-gradient-primary animate-pulse-neon shadow-neon">
                     <div className="w-full h-full rounded-full flex items-center justify-center">
-                      <Radio className="w-4 h-4 text-white animate-pulse" />
+                      <Radio className="w-4 h-4 text-foreground animate-pulse" />
                     </div>
                   </div>
                 </div>
               </div>
               <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-electric-blue animate-float shadow-electric">
-                <Sparkles className="w-3 h-3 text-white m-0.5" />
+                <Sparkles className="w-3 h-3 text-foreground m-0.5" />
               </div>
               <div className="absolute -bottom-1 -left-1 w-3 h-3 rounded-full bg-cyber-pink animate-pulse shadow-cyber" />
               
@@ -293,7 +293,7 @@ const Index = () => {
             <p className="text-xl font-light max-w-lg mx-auto leading-relaxed text-gradient-rainbow animate-shimmer mb-4">
               Transform your emotions into healing frequencies through advanced sound therapy
             </p>
-            <div className="flex items-center justify-center space-x-4 text-primary-glow text-sm animate-float">
+            <div className="flex items-center justify-center space-x-4 text-primary-glow text-sm">
               <div className="flex items-center space-x-2 bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm border border-primary/20">
                 <Heart className="h-4 w-4 animate-pulse text-cyber-pink" />
                 <span>AI-Powered Wellness</span>
@@ -315,35 +315,35 @@ const Index = () => {
             <TabsList className="grid w-full grid-cols-5 bg-gradient-cosmic/20 border-primary/40 backdrop-blur-sm">
               <TabsTrigger 
                 value="mood-input" 
-                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
+                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-foreground data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
               >
                 <Brain className="w-4 h-4 mr-1" />
                 Mood Input
               </TabsTrigger>
               <TabsTrigger 
                 value="presets" 
-                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
+                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-foreground data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
               >
                 <Sparkles className="w-4 h-4 mr-1" />
                 Presets
               </TabsTrigger>
               <TabsTrigger 
                 value="frequency" 
-                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
+                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-foreground data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
               >
                 <Radio className="w-4 h-4 mr-1" />
                 Frequency
               </TabsTrigger>
               <TabsTrigger 
                 value="white-noise" 
-                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
+                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-foreground data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
               >
                 <Waves className="w-4 h-4 mr-1" />
                 White Noise
               </TabsTrigger>
               <TabsTrigger 
                 value="information" 
-                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
+                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-foreground data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
               >
                 <Heart className="w-4 h-4 mr-1" />
                 Information
@@ -354,7 +354,7 @@ const Index = () => {
             <TabsContent value="mood-input" className="space-y-8 p-8">
               <div className="flex items-center space-x-4 mb-8">
                 <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center shadow-neon animate-pulse-neon">
-                  <Brain className="w-6 h-6 text-white" />
+                  <Brain className="w-6 h-6 text-foreground" />
                 </div>
                 <div>
                   <h2 className="text-3xl font-bold text-gradient-cosmic">Share Your Current State</h2>
@@ -407,7 +407,7 @@ const Index = () => {
             <TabsContent value="presets" className="space-y-6 p-8">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">✨</span>
+                  <span className="text-foreground font-bold text-sm">✨</span>
                 </div>
                 <h2 className="text-2xl font-semibold text-purple-200">Healing Frequency Presets</h2>
               </div>
@@ -421,7 +421,7 @@ const Index = () => {
                 <>
                   <div className="flex items-center space-x-3 mb-6">
                     <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">🎵</span>
+                      <span className="text-foreground font-bold text-sm">🎵</span>
                     </div>
                     <h2 className="text-2xl font-semibold text-purple-200">Your Personalized Frequency</h2>
                   </div>
@@ -466,7 +466,7 @@ const Index = () => {
             <TabsContent value="white-noise" className="space-y-6 p-8">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">🌊</span>
+                  <span className="text-foreground font-bold text-sm">🌊</span>
                 </div>
                 <h2 className="text-2xl font-semibold text-purple-200">Natural White Noise</h2>
               </div>
@@ -484,7 +484,7 @@ const Index = () => {
             <TabsContent value="information" className="space-y-6 p-8">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">i</span>
+                  <span className="text-foreground font-bold text-sm">i</span>
                 </div>
                 <h2 className="text-2xl font-semibold text-purple-200">Learn About Sound Therapy</h2>
               </div>

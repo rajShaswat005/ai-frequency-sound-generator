@@ -197,12 +197,12 @@ export const FrequencyVisualizer = ({
             <div className="w-full h-full flex items-center justify-center">
               <div className="text-center">
                 <span className={`font-mono text-2xl font-bold transition-all duration-300 ${
-                  isPlaying ? 'text-gradient-cosmic' : 'text-white/80'
+                  isPlaying ? 'text-gradient-cosmic' : 'text-foreground'
                 }`}>
                   {frequency}
                 </span>
                 <div className={`text-sm transition-colors duration-300 ${
-                  isPlaying ? 'text-primary-glow' : 'text-white/60'
+                  isPlaying ? 'text-primary-glow' : 'text-muted-foreground'
                 }`}>
                   Hz
                 </div>
@@ -212,10 +212,10 @@ export const FrequencyVisualizer = ({
         </div>
         
         {/* Dynamic Corner Elements */}
-        <div className="absolute top-3 left-3 w-4 h-4 bg-electric-blue rounded-full shadow-electric animate-float" />
-        <div className="absolute top-3 right-3 w-4 h-4 bg-neon-purple rounded-full shadow-neon animate-float" style={{ animationDelay: '1s' }} />
-        <div className="absolute bottom-3 left-3 w-4 h-4 bg-cyber-pink rounded-full shadow-cyber animate-float" style={{ animationDelay: '2s' }} />
-        <div className="absolute bottom-3 right-3 w-4 h-4 bg-plasma-green rounded-full animate-float" style={{ animationDelay: '3s' }} />
+        <div className="absolute top-3 left-3 w-4 h-4 bg-electric-blue rounded-full shadow-electric" />
+        <div className="absolute top-3 right-3 w-4 h-4 bg-neon-purple rounded-full shadow-neon" />
+        <div className="absolute bottom-3 left-3 w-4 h-4 bg-cyber-pink rounded-full shadow-cyber" />
+        <div className="absolute bottom-3 right-3 w-4 h-4 bg-plasma-green rounded-full" />
         
         {/* Status Indicators */}
         <div className="absolute top-3 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-black/60 backdrop-blur-sm rounded-full">
@@ -223,7 +223,7 @@ export const FrequencyVisualizer = ({
             <div className={`w-2 h-2 rounded-full transition-colors duration-300 ${
               isPlaying ? 'bg-primary animate-pulse' : 'bg-white/40'
             }`} />
-            <span className="text-white/80 font-mono">
+            <span className="text-foreground font-mono">
               {isPlaying ? 'ACTIVE' : 'STANDBY'}
             </span>
           </div>
@@ -234,7 +234,7 @@ export const FrequencyVisualizer = ({
       <div className="grid grid-cols-4 gap-4">
         {['Low', 'Mid-Low', 'Mid-High', 'High'].map((band, index) => (
           <div key={band} className="bg-black/40 backdrop-blur-sm rounded-lg p-4 border border-white/10">
-            <div className="text-xs text-white/60 mb-2">{band}</div>
+            <div className="text-xs text-muted-foreground mb-2">{band}</div>
             <div className="flex items-end space-x-1 h-12">
               {[...Array(8)].map((_, i) => (
                 <div
