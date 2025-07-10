@@ -2,10 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
+/* Advanced Design System for Music Player UI */
 
 @layer base {
   :root {
+    /* Base Colors */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
@@ -15,17 +16,23 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
+    /* Enhanced Primary Palette */
+    --primary: 262 83% 58%;
     --primary-foreground: 210 40% 98%;
+    --primary-glow: 262 83% 78%;
+    --primary-dark: 262 83% 38%;
 
+    /* Rich Secondary Colors */
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
+    /* Dynamic Accent Colors */
+    --accent: 300 76% 72%;
     --accent-foreground: 222.2 47.4% 11.2%;
+    --accent-glow: 300 76% 82%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -34,7 +41,45 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Advanced Music Player Colors */
+    --electric-blue: 200 100% 60%;
+    --neon-purple: 270 100% 70%;
+    --cyber-pink: 320 100% 75%;
+    --plasma-green: 160 100% 65%;
+    --solar-orange: 30 100% 65%;
+    --cosmic-violet: 280 85% 65%;
+    
+    /* Gradient Definitions */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-rainbow: linear-gradient(90deg, 
+      hsl(var(--electric-blue)), 
+      hsl(var(--neon-purple)), 
+      hsl(var(--cyber-pink)), 
+      hsl(var(--plasma-green)));
+    --gradient-cosmic: linear-gradient(135deg, 
+      hsl(var(--cosmic-violet)), 
+      hsl(var(--neon-purple)), 
+      hsl(var(--primary)));
+    --gradient-aurora: linear-gradient(180deg,
+      hsl(var(--plasma-green)) 0%,
+      hsl(var(--electric-blue)) 25%,
+      hsl(var(--neon-purple)) 50%,
+      hsl(var(--cyber-pink)) 75%,
+      hsl(var(--solar-orange)) 100%);
+    
+    /* Advanced Shadow System */
+    --shadow-glow: 0 0 30px hsl(var(--primary) / 0.5);
+    --shadow-neon: 0 0 40px hsl(var(--neon-purple) / 0.6);
+    --shadow-cyber: 0 0 50px hsl(var(--cyber-pink) / 0.4);
+    --shadow-electric: 0 0 35px hsl(var(--electric-blue) / 0.5);
+    --shadow-cosmic: 0 10px 40px -10px hsl(var(--cosmic-violet) / 0.8);
+    
+    /* Animation Variables */
+    --pulse-duration: 2s;
+    --glow-duration: 3s;
+    --wave-duration: 4s;
 
     --sidebar-background: 0 0% 98%;
 
@@ -54,6 +99,7 @@
   }
 
   .dark {
+    /* Enhanced Dark Mode Base */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
@@ -63,8 +109,11 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
+    /* Dark Mode Primary Enhancement */
+    --primary: 262 83% 68%;
     --primary-foreground: 222.2 47.4% 11.2%;
+    --primary-glow: 262 83% 88%;
+    --primary-dark: 262 83% 48%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -72,8 +121,10 @@
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    /* Enhanced Dark Accent */
+    --accent: 300 76% 82%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent-glow: 300 76% 92%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
@@ -81,6 +132,14 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+
+    /* Enhanced Dark Mode Music Colors */
+    --electric-blue: 200 100% 70%;
+    --neon-purple: 270 100% 80%;
+    --cyber-pink: 320 100% 85%;
+    --plasma-green: 160 100% 75%;
+    --solar-orange: 30 100% 75%;
+    --cosmic-violet: 280 85% 75%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -99,5 +158,141 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Advanced Animation System */
+@layer utilities {
+  .animate-glow {
+    animation: glow var(--glow-duration) ease-in-out infinite alternate;
+  }
+  
+  .animate-pulse-neon {
+    animation: pulse-neon var(--pulse-duration) ease-in-out infinite;
+  }
+  
+  .animate-wave {
+    animation: wave var(--wave-duration) ease-in-out infinite;
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-rotate-slow {
+    animation: rotate-slow 20s linear infinite;
+  }
+  
+  .animate-shimmer {
+    animation: shimmer 2s linear infinite;
+  }
+  
+  /* Gradient text utilities */
+  .text-gradient-primary {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .text-gradient-rainbow {
+    background: var(--gradient-rainbow);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .text-gradient-cosmic {
+    background: var(--gradient-cosmic);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Advanced shadow utilities */
+  .shadow-neon {
+    box-shadow: var(--shadow-neon);
+  }
+  
+  .shadow-cyber {
+    box-shadow: var(--shadow-cyber);
+  }
+  
+  .shadow-electric {
+    box-shadow: var(--shadow-electric);
+  }
+  
+  .shadow-cosmic {
+    box-shadow: var(--shadow-cosmic);
+  }
+  
+  /* Backdrop blur enhancements */
+  .backdrop-blur-glass {
+    backdrop-filter: blur(20px) saturate(180%);
+  }
+  
+  .backdrop-blur-heavy {
+    backdrop-filter: blur(40px) saturate(200%) brightness(110%);
+  }
+}
+
+/* Keyframe Animations */
+@keyframes glow {
+  from {
+    filter: drop-shadow(0 0 20px hsl(var(--primary) / 0.8));
+  }
+  to {
+    filter: drop-shadow(0 0 40px hsl(var(--primary) / 0.4));
+  }
+}
+
+@keyframes pulse-neon {
+  0%, 100% {
+    box-shadow: 0 0 20px hsl(var(--neon-purple) / 0.8);
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(var(--neon-purple) / 0.4), 0 0 60px hsl(var(--cyber-pink) / 0.3);
+  }
+}
+
+@keyframes wave {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+  50% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(10px) rotate(-1deg);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes rotate-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
   }
 }

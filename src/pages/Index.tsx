@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Play, Pause, Volume2, Waves, Brain, Heart, Sun, Mountain, Flame, Shell, Flower2 } from "lucide-react";
+import { Play, Pause, Volume2, Waves, Brain, Heart, Sun, Mountain, Flame, Shell, Flower2, Sparkles, Zap, Radio } from "lucide-react";
 import { FrequencyVisualizer } from "@/components/FrequencyVisualizer";
 import { MoodButtons } from "@/components/MoodButtons";
 import { EnhancedWhiteNoisePlayer } from "@/components/EnhancedWhiteNoisePlayer";
@@ -171,7 +171,7 @@ const Index = () => {
   const currentMoodData = selectedMood ? moodFrequencies[selectedMood as keyof typeof moodFrequencies] : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-950 via-black to-purple-900 text-white p-4 relative overflow-hidden pb-32">
+    <div className="min-h-screen bg-gradient-aurora text-white p-4 relative overflow-hidden pb-32 animate-wave">
       {/* Enhanced Audio Engine - Only for frequency tracks */}
       {(() => {
         const currentTrack = getCurrentTrack();
@@ -221,41 +221,87 @@ const Index = () => {
         <AuthButton />
       </div>
 
-      {/* Enhanced animated background elements */}
+      {/* Ultra-Advanced Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }}></div>
-        <div className="absolute top-10 right-1/4 w-48 h-48 bg-pink-500/8 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '6s' }}></div>
-        <div className="absolute bottom-10 left-1/4 w-56 h-56 bg-cyan-500/8 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '8s' }}></div>
+        {/* Primary floating orbs */}
+        <div className="absolute top-20 left-10 w-96 h-96 bg-electric-blue/15 rounded-full blur-3xl animate-float shadow-electric"></div>
+        <div className="absolute bottom-20 right-10 w-128 h-128 bg-neon-purple/20 rounded-full blur-3xl animate-float shadow-neon" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-cyber-pink/10 rounded-full blur-3xl animate-rotate-slow shadow-cyber"></div>
+        
+        {/* Secondary cosmic elements */}
+        <div className="absolute top-10 right-1/4 w-64 h-64 bg-plasma-green/12 rounded-full blur-2xl animate-pulse shadow-glow" style={{ animationDelay: '6s' }}></div>
+        <div className="absolute bottom-10 left-1/4 w-72 h-72 bg-solar-orange/15 rounded-full blur-2xl animate-glow" style={{ animationDelay: '8s' }}></div>
+        <div className="absolute top-1/3 right-10 w-56 h-56 bg-cosmic-violet/18 rounded-full blur-2xl animate-float" style={{ animationDelay: '10s' }}></div>
+        
+        {/* Ambient grid patterns */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="w-full h-full" 
+               style={{
+                 backgroundImage: `
+                   radial-gradient(circle at 25% 25%, hsl(var(--electric-blue)) 2px, transparent 2px),
+                   radial-gradient(circle at 75% 75%, hsl(var(--neon-purple)) 1px, transparent 1px)
+                 `,
+                 backgroundSize: '100px 100px, 150px 150px'
+               }}>
+          </div>
+        </div>
+        
+        {/* Floating geometric shapes */}
+        <div className="absolute top-32 left-1/3 w-8 h-8 border-2 border-primary/40 rotate-45 animate-rotate-slow"></div>
+        <div className="absolute bottom-32 right-1/3 w-6 h-6 bg-accent/30 rounded-full animate-pulse-neon"></div>
+        <div className="absolute top-2/3 left-20 w-10 h-10 border border-electric-blue/50 rounded-full animate-float"></div>
       </div>
 
       <div className="max-w-4xl mx-auto space-y-8 relative z-10">
         {/* Header with Logo moved to top left */}
         <div className="flex items-center justify-between pt-4 mb-8">
-          {/* Logo moved to top left */}
+          {/* Enhanced Logo with Advanced Effects */}
           <div className="flex items-center space-x-4">
             <div className="relative">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 p-1 animate-pulse">
-                <div className="w-full h-full rounded-full bg-black flex items-center justify-center">
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-400 to-pink-400 animate-pulse"></div>
+              <div className="w-16 h-16 rounded-full bg-gradient-cosmic p-1 animate-glow shadow-cosmic">
+                <div className="w-full h-full rounded-full bg-black/80 backdrop-blur-sm flex items-center justify-center border border-primary/30">
+                  <div className="w-8 h-8 rounded-full bg-gradient-primary animate-pulse-neon shadow-neon">
+                    <div className="w-full h-full rounded-full flex items-center justify-center">
+                      <Radio className="w-4 h-4 text-white animate-pulse" />
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-gradient-to-r from-yellow-400 to-orange-400 animate-bounce"></div>
+              <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-electric-blue animate-float shadow-electric">
+                <Sparkles className="w-3 h-3 text-white m-0.5" />
+              </div>
+              <div className="absolute -bottom-1 -left-1 w-3 h-3 rounded-full bg-cyber-pink animate-pulse shadow-cyber" />
+              
+              {/* Orbiting micro elements */}
+              <div className="absolute inset-0 animate-rotate-slow">
+                <div className="absolute top-0 left-1/2 w-1 h-1 bg-neon-purple rounded-full -translate-x-1/2 -translate-y-2" />
+                <div className="absolute bottom-0 left-1/2 w-1 h-1 bg-plasma-green rounded-full -translate-x-1/2 translate-y-2" />
+              </div>
             </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent animate-pulse">
-              Aurix
-            </h1>
+            <div>
+              <h1 className="text-4xl font-bold text-gradient-cosmic animate-shimmer tracking-wider">
+                Aurix
+              </h1>
+              <div className="text-xs text-primary/80 font-mono animate-pulse">
+                ADVANCED AUDIO ENGINE
+              </div>
+            </div>
           </div>
           
-          {/* Centered title and description */}
+          {/* Enhanced Hero Description */}
           <div className="text-center flex-1 mx-8">
-            <p className="text-purple-300 text-lg font-light max-w-md mx-auto leading-relaxed animate-fade-in">
-              Transform your emotions into healing frequencies through the power of sound therapy
+            <p className="text-xl font-light max-w-lg mx-auto leading-relaxed text-gradient-rainbow animate-shimmer mb-4">
+              Transform your emotions into healing frequencies through advanced sound therapy
             </p>
-            <div className="flex items-center justify-center space-x-2 text-purple-400 text-sm animate-fade-in mt-2">
-              <Heart className="h-4 w-4 animate-pulse" />
-              <span>Scientifically crafted for emotional wellness</span>
+            <div className="flex items-center justify-center space-x-4 text-primary-glow text-sm animate-float">
+              <div className="flex items-center space-x-2 bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm border border-primary/20">
+                <Heart className="h-4 w-4 animate-pulse text-cyber-pink" />
+                <span>AI-Powered Wellness</span>
+              </div>
+              <div className="flex items-center space-x-2 bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm border border-primary/20">
+                <Zap className="h-4 w-4 animate-pulse text-electric-blue" />
+                <span>Real-time Visualization</span>
+              </div>
             </div>
           </div>
           
@@ -263,49 +309,57 @@ const Index = () => {
           <div className="w-12"></div>
         </div>
 
-        {/* Main Tabs */}
-        <Card className="bg-black/40 border-purple-900/60 backdrop-blur-md shadow-2xl">
+        {/* Advanced Main Interface */}
+        <Card className="bg-black/20 border-primary/30 backdrop-blur-heavy shadow-cosmic animate-glow">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-5 bg-black/60 border-purple-800/60">
+            <TabsList className="grid w-full grid-cols-5 bg-gradient-cosmic/20 border-primary/40 backdrop-blur-sm">
               <TabsTrigger 
                 value="mood-input" 
-                className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white text-xs"
+                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
               >
+                <Brain className="w-4 h-4 mr-1" />
                 Mood Input
               </TabsTrigger>
               <TabsTrigger 
                 value="presets" 
-                className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white text-xs"
+                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
               >
+                <Sparkles className="w-4 h-4 mr-1" />
                 Presets
               </TabsTrigger>
               <TabsTrigger 
                 value="frequency" 
-                className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white text-xs"
+                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
               >
+                <Radio className="w-4 h-4 mr-1" />
                 Frequency
               </TabsTrigger>
               <TabsTrigger 
                 value="white-noise" 
-                className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white text-xs"
+                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
               >
+                <Waves className="w-4 h-4 mr-1" />
                 White Noise
               </TabsTrigger>
               <TabsTrigger 
                 value="information" 
-                className="data-[state=active]:bg-purple-700/80 data-[state=active]:text-white text-xs"
+                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
               >
+                <Heart className="w-4 h-4 mr-1" />
                 Information
               </TabsTrigger>
             </TabsList>
 
-            {/* Mood Input Tab */}
+            {/* Enhanced Mood Input Tab */}
             <TabsContent value="mood-input" className="space-y-8 p-8">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">1</span>
+              <div className="flex items-center space-x-4 mb-8">
+                <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center shadow-neon animate-pulse-neon">
+                  <Brain className="w-6 h-6 text-white" />
                 </div>
-                <h2 className="text-2xl font-semibold text-purple-200">Share Your Current State</h2>
+                <div>
+                  <h2 className="text-3xl font-bold text-gradient-cosmic">Share Your Current State</h2>
+                  <p className="text-primary-glow text-sm">Let AI transform your emotions into healing frequencies</p>
+                </div>
               </div>
               
               <div className="space-y-8">
@@ -338,10 +392,12 @@ const Index = () => {
                 <div className="flex justify-center">
                   <Button 
                     onClick={generateFrequency}
-                    className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white font-medium py-4 px-8 text-base shadow-lg transform transition-all duration-200 hover:scale-[1.02] hover:shadow-purple-500/25"
+                    className="bg-gradient-primary hover:bg-gradient-cosmic text-white font-bold py-4 px-12 text-lg shadow-cosmic transform transition-all duration-300 hover:scale-105 hover:shadow-neon animate-glow disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                     disabled={!moodText.trim() && !selectedMood}
                   >
-                    Generate
+                    <Sparkles className="w-5 h-5 mr-2" />
+                    Generate Frequency
+                    <Zap className="w-5 h-5 ml-2" />
                   </Button>
                 </div>
               </div>
@@ -368,6 +424,19 @@ const Index = () => {
                       <span className="text-white font-bold text-sm">🎵</span>
                     </div>
                     <h2 className="text-2xl font-semibold text-purple-200">Your Personalized Frequency</h2>
+                  </div>
+                  
+                  {/* Advanced Frequency Visualizer */}
+                  <div className="mb-8">
+                    <FrequencyVisualizer 
+                      frequency={frequency}
+                      isPlaying={(() => {
+                        const currentTrack = getCurrentTrack();
+                        return currentTrack?.type === 'frequency' && currentTrack.frequency === frequency && currentTrack.isPlaying || false;
+                      })()}
+                      volume={volume[0] / 100}
+                      waveform={waveform}
+                    />
                   </div>
                   
                   <EnhancedFrequencyPlayer 
