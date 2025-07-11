@@ -15,7 +15,6 @@ import { StreamingMusicControl } from "@/components/StreamingMusicControl";
 import { PresetFrequencies } from "@/components/PresetFrequencies";
 import { useAudioQueue } from "@/hooks/useAudioQueue";
 import AuthButton from "@/components/AuthButton";
-
 const Index = () => {
   const [moodText, setMoodText] = useState("");
   const [frequency, setFrequency] = useState(440);
@@ -28,7 +27,7 @@ const Index = () => {
     lowPass: 0.4,
     vibrato: 0.1
   });
-  
+
   // Enhanced audio queue management
   const {
     audioQueue,
@@ -45,25 +44,63 @@ const Index = () => {
     shuffleQueue,
     toggleRepeat,
     playNext,
-    playPrevious,
+    playPrevious
   } = useAudioQueue();
-  
   const audioContextRef = useRef<AudioContext | null>(null);
   const oscillatorRef = useRef<OscillatorNode | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
 
   // Mood to frequency mapping with descriptions
   const moodFrequencies = {
-    calm: { freq: 432, desc: "Harmonious & Grounding", color: "from-blue-500 to-teal-500", soundDesc: "A gentle 432Hz tone that promotes deep relaxation and inner peace" },
-    anxious: { freq: 320, desc: "Soothing & Stabilizing", color: "from-orange-500 to-red-500", soundDesc: "A calming 320Hz frequency designed to reduce anxiety and restore balance" },
-    angry: { freq: 200, desc: "Releasing & Transforming", color: "from-red-500 to-pink-500", soundDesc: "A grounding 200Hz tone that helps release tension and transform anger" },
-    sad: { freq: 256, desc: "Healing & Uplifting", color: "from-indigo-500 to-purple-500", soundDesc: "An uplifting 256Hz frequency that supports emotional healing and renewal" },
-    happy: { freq: 528, desc: "Love & Transformation", color: "from-yellow-500 to-green-500", soundDesc: "The powerful 528Hz 'Love Frequency' that amplifies joy and positive energy" },
-    energetic: { freq: 640, desc: "Vitality & Motivation", color: "from-green-500 to-emerald-500", soundDesc: "An energizing 640Hz tone that boosts vitality and motivation" },
-    peaceful: { freq: 396, desc: "Liberation & Freedom", color: "from-cyan-500 to-blue-500", soundDesc: "A liberating 396Hz frequency that promotes inner peace and freedom from fear" },
-    stressed: { freq: 285, desc: "Restoration & Renewal", color: "from-purple-500 to-violet-500", soundDesc: "A restorative 285Hz tone that helps repair and renew your energy field" }
+    calm: {
+      freq: 432,
+      desc: "Harmonious & Grounding",
+      color: "from-blue-500 to-teal-500",
+      soundDesc: "A gentle 432Hz tone that promotes deep relaxation and inner peace"
+    },
+    anxious: {
+      freq: 320,
+      desc: "Soothing & Stabilizing",
+      color: "from-orange-500 to-red-500",
+      soundDesc: "A calming 320Hz frequency designed to reduce anxiety and restore balance"
+    },
+    angry: {
+      freq: 200,
+      desc: "Releasing & Transforming",
+      color: "from-red-500 to-pink-500",
+      soundDesc: "A grounding 200Hz tone that helps release tension and transform anger"
+    },
+    sad: {
+      freq: 256,
+      desc: "Healing & Uplifting",
+      color: "from-indigo-500 to-purple-500",
+      soundDesc: "An uplifting 256Hz frequency that supports emotional healing and renewal"
+    },
+    happy: {
+      freq: 528,
+      desc: "Love & Transformation",
+      color: "from-yellow-500 to-green-500",
+      soundDesc: "The powerful 528Hz 'Love Frequency' that amplifies joy and positive energy"
+    },
+    energetic: {
+      freq: 640,
+      desc: "Vitality & Motivation",
+      color: "from-green-500 to-emerald-500",
+      soundDesc: "An energizing 640Hz tone that boosts vitality and motivation"
+    },
+    peaceful: {
+      freq: 396,
+      desc: "Liberation & Freedom",
+      color: "from-cyan-500 to-blue-500",
+      soundDesc: "A liberating 396Hz frequency that promotes inner peace and freedom from fear"
+    },
+    stressed: {
+      freq: 285,
+      desc: "Restoration & Renewal",
+      color: "from-purple-500 to-violet-500",
+      soundDesc: "A restorative 285Hz tone that helps repair and renew your energy field"
+    }
   };
-
   const analyzeMood = (text: string) => {
     const lowerText = text.toLowerCase();
     const moodKeywords = {
@@ -76,10 +113,8 @@ const Index = () => {
       peaceful: ['peaceful', 'zen', 'centered', 'balanced', 'harmonious'],
       stressed: ['stressed', 'overwhelmed', 'pressure', 'burden', 'exhausted']
     };
-
     let bestMatch = 'calm';
     let maxMatches = 0;
-
     Object.entries(moodKeywords).forEach(([mood, keywords]) => {
       const matches = keywords.filter(keyword => lowerText.includes(keyword)).length;
       if (matches > maxMatches) {
@@ -87,20 +122,16 @@ const Index = () => {
         bestMatch = mood;
       }
     });
-
     return bestMatch;
   };
-
   const generateFrequency = () => {
     if (!moodText.trim() && !selectedMood) return;
-    
     const detectedMood = selectedMood || analyzeMood(moodText);
     setSelectedMood(detectedMood);
     const newFreq = moodFrequencies[detectedMood as keyof typeof moodFrequencies].freq || 440;
     setFrequency(newFreq);
-    
     const trackName = `${newFreq} Hz - ${detectedMood.charAt(0).toUpperCase() + detectedMood.slice(1)} Frequency`;
-    
+
     // Add to queue
     const trackId = addToQueue({
       name: trackName,
@@ -109,15 +140,13 @@ const Index = () => {
       mood: detectedMood,
       volume: volume[0],
       waveform,
-      effects,
+      effects
     });
-    
     setActiveTab("frequency");
   };
-
   const handlePresetSelect = (freq: number, name: string) => {
     setFrequency(freq);
-    
+
     // Add to queue
     addToQueue({
       name,
@@ -125,34 +154,28 @@ const Index = () => {
       frequency: freq,
       volume: volume[0],
       waveform,
-      effects,
+      effects
     });
-    
     setActiveTab("frequency");
   };
-
   const handleWhiteNoiseSelect = (trackId: string, trackName: string) => {
     // Add to queue and auto-play
     const newTrackId = addToQueue({
       name: trackName,
       type: 'whitenoise',
       volume: volume[0],
-      whiteNoiseId: trackId, // Store the white noise track ID for reference
+      whiteNoiseId: trackId // Store the white noise track ID for reference
     });
-    
+
     // Small delay to ensure track is added before playing
     setTimeout(() => playTrack(newTrackId), 50);
   };
-
   const handleFrequencyPlay = () => {
     if (!frequency) return;
-    
+
     // Ensure current frequency is in queue
     const trackName = `${frequency} Hz Frequency`;
-    const existingTrack = audioQueue.find(t => 
-      t.type === 'frequency' && t.frequency === frequency
-    );
-    
+    const existingTrack = audioQueue.find(t => t.type === 'frequency' && t.frequency === frequency);
     if (existingTrack) {
       playTrack(existingTrack.id);
     } else {
@@ -162,59 +185,27 @@ const Index = () => {
         frequency,
         volume: volume[0],
         waveform,
-        effects,
+        effects
       });
       setTimeout(() => playTrack(trackId), 50);
     }
   };
-
   const currentMoodData = selectedMood ? moodFrequencies[selectedMood as keyof typeof moodFrequencies] : null;
-
-  return (
-    <div className="min-h-screen bg-gradient-aurora text-foreground p-4 relative overflow-hidden pb-32">
+  return <div className="min-h-screen bg-gradient-aurora text-foreground p-4 relative overflow-hidden pb-32">
       {/* Enhanced Audio Engine - Only for frequency tracks */}
       {(() => {
-        const currentTrack = getCurrentTrack();
-        return currentTrack && currentTrack.type === 'frequency' && currentTrack.isPlaying ? (
-          <EnhancedAudioEngine
-            frequency={currentTrack.frequency!}
-            isPlaying={currentTrack.isPlaying}
-            volume={currentTrack.volume}
-            waveform={currentTrack.waveform || 'sine'}
-            effects={currentTrack.effects || effects}
-          />
-        ) : null;
-      })()}
+      const currentTrack = getCurrentTrack();
+      return currentTrack && currentTrack.type === 'frequency' && currentTrack.isPlaying ? <EnhancedAudioEngine frequency={currentTrack.frequency!} isPlaying={currentTrack.isPlaying} volume={currentTrack.volume} waveform={currentTrack.waveform || 'sine'} effects={currentTrack.effects || effects} /> : null;
+    })()}
 
       {/* White Noise Engine - Only for white noise tracks */}
       {(() => {
-        const currentTrack = getCurrentTrack();
-        return currentTrack && currentTrack.type === 'whitenoise' && currentTrack.isPlaying ? (
-          <WhiteNoiseEngine
-            whiteNoiseId={currentTrack.whiteNoiseId!}
-            isPlaying={currentTrack.isPlaying}
-            volume={currentTrack.volume}
-          />
-        ) : null;
-      })()}
+      const currentTrack = getCurrentTrack();
+      return currentTrack && currentTrack.type === 'whitenoise' && currentTrack.isPlaying ? <WhiteNoiseEngine whiteNoiseId={currentTrack.whiteNoiseId!} isPlaying={currentTrack.isPlaying} volume={currentTrack.volume} /> : null;
+    })()}
 
       {/* Streaming Music Control */}
-      <StreamingMusicControl
-        audioQueue={audioQueue}
-        currentlyPlayingId={currentlyPlayingId}
-        isShuffled={isShuffled}
-        isRepeating={isRepeating}
-        onPlayTrack={playTrack}
-        onStopTrack={stopTrack}
-        onRemoveTrack={removeFromQueue}
-        onUpdateTrack={updateTrack}
-        onPlayNext={playNext}
-        onPlayPrevious={playPrevious}
-        onShuffle={shuffleQueue}
-        onRepeat={toggleRepeat}
-        globalVolume={volume}
-        onGlobalVolumeChange={setVolume}
-      />
+      <StreamingMusicControl audioQueue={audioQueue} currentlyPlayingId={currentlyPlayingId} isShuffled={isShuffled} isRepeating={isRepeating} onPlayTrack={playTrack} onStopTrack={stopTrack} onRemoveTrack={removeFromQueue} onUpdateTrack={updateTrack} onPlayNext={playNext} onPlayPrevious={playPrevious} onShuffle={shuffleQueue} onRepeat={toggleRepeat} globalVolume={volume} onGlobalVolumeChange={setVolume} />
 
       {/* Add AuthButton at top right corner */}
       <div className="absolute top-4 right-4 z-50">
@@ -229,20 +220,23 @@ const Index = () => {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-cyber-pink/10 rounded-full blur-3xl animate-rotate-slow shadow-cyber"></div>
         
         {/* Secondary cosmic elements */}
-        <div className="absolute top-10 right-1/4 w-64 h-64 bg-plasma-green/12 rounded-full blur-2xl animate-pulse shadow-glow" style={{ animationDelay: '6s' }}></div>
-        <div className="absolute bottom-10 left-1/4 w-72 h-72 bg-solar-orange/15 rounded-full blur-2xl animate-glow" style={{ animationDelay: '8s' }}></div>
+        <div className="absolute top-10 right-1/4 w-64 h-64 bg-plasma-green/12 rounded-full blur-2xl animate-pulse shadow-glow" style={{
+        animationDelay: '6s'
+      }}></div>
+        <div className="absolute bottom-10 left-1/4 w-72 h-72 bg-solar-orange/15 rounded-full blur-2xl animate-glow" style={{
+        animationDelay: '8s'
+      }}></div>
         <div className="absolute top-1/3 right-10 w-56 h-56 bg-cosmic-violet/18 rounded-full blur-2xl"></div>
         
         {/* Ambient grid patterns */}
         <div className="absolute inset-0 opacity-5">
-          <div className="w-full h-full" 
-               style={{
-                 backgroundImage: `
+          <div className="w-full h-full" style={{
+          backgroundImage: `
                    radial-gradient(circle at 25% 25%, hsl(var(--electric-blue)) 2px, transparent 2px),
                    radial-gradient(circle at 75% 75%, hsl(var(--neon-purple)) 1px, transparent 1px)
                  `,
-                 backgroundSize: '100px 100px, 150px 150px'
-               }}>
+          backgroundSize: '100px 100px, 150px 150px'
+        }}>
           </div>
         </div>
         
@@ -290,7 +284,7 @@ const Index = () => {
           
           {/* Enhanced Hero Description */}
           <div className="text-center flex-1 mx-8">
-            <p className="text-xl font-light max-w-lg mx-auto leading-relaxed text-gradient-rainbow animate-shimmer mb-4">
+            <p className="text-xl font-light max-w-lg mx-auto leading-relaxed text-gradient-rainbow animate-shimmer mb-4 text-slate-950">
               Transform your emotions into healing frequencies through advanced sound therapy
             </p>
             <div className="flex items-center justify-center space-x-4 text-primary-glow text-sm">
@@ -313,38 +307,23 @@ const Index = () => {
         <Card className="bg-black/20 border-primary/30 backdrop-blur-heavy shadow-cosmic animate-glow">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-5 bg-gradient-cosmic/20 border-primary/40 backdrop-blur-sm">
-              <TabsTrigger 
-                value="mood-input" 
-                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-foreground data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
-              >
+              <TabsTrigger value="mood-input" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-foreground data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20">
                 <Brain className="w-4 h-4 mr-1" />
                 Mood Input
               </TabsTrigger>
-              <TabsTrigger 
-                value="presets" 
-                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-foreground data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
-              >
+              <TabsTrigger value="presets" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-foreground data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20">
                 <Sparkles className="w-4 h-4 mr-1" />
                 Presets
               </TabsTrigger>
-              <TabsTrigger 
-                value="frequency" 
-                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-foreground data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
-              >
+              <TabsTrigger value="frequency" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-foreground data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20">
                 <Radio className="w-4 h-4 mr-1" />
                 Frequency
               </TabsTrigger>
-              <TabsTrigger 
-                value="white-noise" 
-                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-foreground data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
-              >
+              <TabsTrigger value="white-noise" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-foreground data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20">
                 <Waves className="w-4 h-4 mr-1" />
                 White Noise
               </TabsTrigger>
-              <TabsTrigger 
-                value="information" 
-                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-foreground data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20"
-              >
+              <TabsTrigger value="information" className="data-[state=active]:bg-gradient-primary data-[state=active]:text-foreground data-[state=active]:shadow-neon text-xs transition-all duration-300 hover:bg-primary/20">
                 <Heart className="w-4 h-4 mr-1" />
                 Information
               </TabsTrigger>
@@ -375,14 +354,7 @@ const Index = () => {
                     Or describe how you're feeling in detail:
                   </label>
                   <div className="relative">
-                    <Textarea
-                      id="mood-input"
-                      placeholder="Tell me about your current emotional state... The more you share, the better I can personalize your healing frequency. Describe your feelings, what's on your mind, or what kind of support you need right now."
-                      value={moodText}
-                      onChange={(e) => setMoodText(e.target.value)}
-                      className="bg-black/40 border-primary/60 text-foreground placeholder:text-foreground/50 min-h-40 text-base leading-relaxed focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 resize-none"
-                      rows={8}
-                    />
+                    <Textarea id="mood-input" placeholder="Tell me about your current emotional state... The more you share, the better I can personalize your healing frequency. Describe your feelings, what's on your mind, or what kind of support you need right now." value={moodText} onChange={e => setMoodText(e.target.value)} className="bg-black/40 border-primary/60 text-foreground placeholder:text-foreground/50 min-h-40 text-base leading-relaxed focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 resize-none" rows={8} />
                     <div className="absolute bottom-3 right-3 text-xs text-foreground/60">
                       {moodText.length}/1000
                     </div>
@@ -390,11 +362,7 @@ const Index = () => {
                 </div>
                 
                 <div className="flex justify-center">
-                  <Button 
-                    onClick={generateFrequency}
-                    className="bg-gradient-primary hover:bg-gradient-cosmic text-white font-bold py-4 px-12 text-lg shadow-cosmic transform transition-all duration-300 hover:scale-105 hover:shadow-neon animate-glow disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                    disabled={!moodText.trim() && !selectedMood}
-                  >
+                  <Button onClick={generateFrequency} className="bg-gradient-primary hover:bg-gradient-cosmic text-white font-bold py-4 px-12 text-lg shadow-cosmic transform transition-all duration-300 hover:scale-105 hover:shadow-neon animate-glow disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none" disabled={!moodText.trim() && !selectedMood}>
                     <Sparkles className="w-5 h-5 mr-2" />
                     Generate Frequency
                     <Zap className="w-5 h-5 ml-2" />
@@ -417,8 +385,7 @@ const Index = () => {
 
             {/* Enhanced Frequency Tab */}
             <TabsContent value="frequency" className="space-y-6 p-8">
-              {frequency ? (
-                <>
+              {frequency ? <>
                   <div className="flex items-center space-x-3 mb-6">
                     <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center shadow-neon">
                       <span className="text-foreground font-bold text-sm">🎵</span>
@@ -428,38 +395,22 @@ const Index = () => {
                   
                   {/* Advanced Frequency Visualizer */}
                   <div className="mb-8">
-                    <FrequencyVisualizer 
-                      frequency={frequency}
-                      isPlaying={(() => {
-                        const currentTrack = getCurrentTrack();
-                        return currentTrack?.type === 'frequency' && currentTrack.frequency === frequency && currentTrack.isPlaying || false;
-                      })()}
-                      volume={volume[0] / 100}
-                      waveform={waveform}
-                    />
+                    <FrequencyVisualizer frequency={frequency} isPlaying={(() => {
+                  const currentTrack = getCurrentTrack();
+                  return currentTrack?.type === 'frequency' && currentTrack.frequency === frequency && currentTrack.isPlaying || false;
+                })()} volume={volume[0] / 100} waveform={waveform} />
                   </div>
                   
-                  <EnhancedFrequencyPlayer 
-                    frequency={frequency}
-                    isPlaying={(() => {
-                      const currentTrack = getCurrentTrack();
-                      return currentTrack?.type === 'frequency' && currentTrack.frequency === frequency && currentTrack.isPlaying || false;
-                    })()}
-                    volume={volume}
-                    onVolumeChange={setVolume}
-                    onTogglePlay={handleFrequencyPlay}
-                    selectedMood={selectedMood}
-                    currentMoodData={currentMoodData}
-                  />
-                </>
-              ) : (
-                <div className="text-center py-12">
+                  <EnhancedFrequencyPlayer frequency={frequency} isPlaying={(() => {
+                const currentTrack = getCurrentTrack();
+                return currentTrack?.type === 'frequency' && currentTrack.frequency === frequency && currentTrack.isPlaying || false;
+              })()} volume={volume} onVolumeChange={setVolume} onTogglePlay={handleFrequencyPlay} selectedMood={selectedMood} currentMoodData={currentMoodData} />
+                </> : <div className="text-center py-12">
                   <div className="text-foreground/60 mb-4">
                     <Waves className="h-16 w-16 mx-auto mb-4 opacity-50" />
                   </div>
                   <p className="text-foreground/80 text-lg">Generate a frequency first by describing your mood or selecting a preset.</p>
-                </div>
-              )}
+                </div>}
             </TabsContent>
 
             {/* New White Noise Tab */}
@@ -471,13 +422,10 @@ const Index = () => {
                 <h2 className="text-2xl font-semibold text-foreground">Natural White Noise</h2>
               </div>
               
-              <EnhancedWhiteNoisePlayer 
-                onTrackSelect={handleWhiteNoiseSelect}
-                selectedTrackId={(() => {
-                  const currentTrack = getCurrentTrack();
-                  return currentTrack?.type === 'whitenoise' ? currentTrack.whiteNoiseId : undefined;
-                })()}
-              />
+              <EnhancedWhiteNoisePlayer onTrackSelect={handleWhiteNoiseSelect} selectedTrackId={(() => {
+              const currentTrack = getCurrentTrack();
+              return currentTrack?.type === 'whitenoise' ? currentTrack.whiteNoiseId : undefined;
+            })()} />
             </TabsContent>
 
             {/* Information Tab */}
@@ -558,26 +506,13 @@ const Index = () => {
                       
                       {/* Contact Links */}
                       <div className="flex flex-wrap justify-center md:justify-start gap-4 pt-2">
-                        <a 
-                          href="https://github.com/rajShaswat005" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="flex items-center space-x-2 bg-primary/20 hover:bg-primary/30 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105"
-                        >
+                        <a href="https://github.com/rajShaswat005" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 bg-primary/20 hover:bg-primary/30 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105">
                           <span className="text-sm font-medium text-foreground">🌐 GitHub</span>
                         </a>
-                        <a 
-                          href="mailto:shaswatraj536@gmail.com"
-                          className="flex items-center space-x-2 bg-primary/20 hover:bg-primary/30 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105"
-                        >
+                        <a href="mailto:shaswatraj536@gmail.com" className="flex items-center space-x-2 bg-primary/20 hover:bg-primary/30 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105">
                           <span className="text-sm font-medium text-foreground">📧 Email</span>
                         </a>
-                        <a 
-                          href="https://www.linkedin.com/in/shaswat-raj-8b9487260/" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="flex items-center space-x-2 bg-primary/20 hover:bg-primary/30 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105"
-                        >
+                        <a href="https://www.linkedin.com/in/shaswat-raj-8b9487260/" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 bg-primary/20 hover:bg-primary/30 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105">
                           <span className="text-sm font-medium text-foreground">🔗 LinkedIn</span>
                         </a>
                       </div>
@@ -608,8 +543,6 @@ const Index = () => {
           </Tabs>
         </Card>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
