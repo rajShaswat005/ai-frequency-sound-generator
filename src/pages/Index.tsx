@@ -495,8 +495,12 @@ const Index = () => {
                 <div className="space-y-6">
                   {/* Developer Info */}
                   <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
-                    <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center shadow-neon">
-                      <span className="text-2xl font-bold text-foreground">SR</span>
+                    <div className="w-20 h-20 rounded-full overflow-hidden shadow-neon border-2 border-primary/30">
+                      <img 
+                        src="/lovable-uploads/d58cda47-3feb-4853-a224-f1ac8389ae7e.png" 
+                        alt="Shaswat Raj - Developer" 
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     
                     <div className="flex-1 text-center md:text-left space-y-3">
