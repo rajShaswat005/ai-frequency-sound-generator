@@ -97,4 +97,4 @@ Streaming Music Control
 
 
 
-***Fully developed by @rajShaswat005***
+***~Fully developed by @rajShaswat005***
