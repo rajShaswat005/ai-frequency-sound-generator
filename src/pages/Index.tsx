@@ -365,13 +365,13 @@ const Index = () => {
               <div className="space-y-8">
                 {/* Mood Selection Buttons */}
                 <div className="space-y-4">
-                  <p className="text-purple-300 text-sm font-medium text-center">Select your current mood:</p>
+                  <p className="text-foreground/80 text-sm font-medium text-center">Select your current mood:</p>
                   <MoodButtons selectedMood={selectedMood} onMoodSelect={setSelectedMood} />
                 </div>
                 
                 {/* Large Textarea */}
                 <div className="space-y-2">
-                  <label htmlFor="mood-input" className="text-purple-300 text-sm font-medium">
+                  <label htmlFor="mood-input" className="text-foreground/80 text-sm font-medium">
                     Or describe how you're feeling in detail:
                   </label>
                   <div className="relative">
@@ -380,10 +380,10 @@ const Index = () => {
                       placeholder="Tell me about your current emotional state... The more you share, the better I can personalize your healing frequency. Describe your feelings, what's on your mind, or what kind of support you need right now."
                       value={moodText}
                       onChange={(e) => setMoodText(e.target.value)}
-                      className="bg-black/40 border-purple-800/60 text-white placeholder:text-purple-400 min-h-40 text-base leading-relaxed focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 resize-none"
+                      className="bg-black/40 border-primary/60 text-foreground placeholder:text-foreground/50 min-h-40 text-base leading-relaxed focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 resize-none"
                       rows={8}
                     />
-                    <div className="absolute bottom-3 right-3 text-xs text-purple-400">
+                    <div className="absolute bottom-3 right-3 text-xs text-foreground/60">
                       {moodText.length}/1000
                     </div>
                   </div>
@@ -406,10 +406,10 @@ const Index = () => {
             {/* New Presets Tab */}
             <TabsContent value="presets" className="space-y-6 p-8">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center shadow-neon">
                   <span className="text-foreground font-bold text-sm">✨</span>
                 </div>
-                <h2 className="text-2xl font-semibold text-purple-200">Healing Frequency Presets</h2>
+                <h2 className="text-2xl font-semibold text-foreground">Healing Frequency Presets</h2>
               </div>
               
               <PresetFrequencies onSelectFrequency={handlePresetSelect} />
@@ -420,10 +420,10 @@ const Index = () => {
               {frequency ? (
                 <>
                   <div className="flex items-center space-x-3 mb-6">
-                    <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
+                    <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center shadow-neon">
                       <span className="text-foreground font-bold text-sm">🎵</span>
                     </div>
-                    <h2 className="text-2xl font-semibold text-purple-200">Your Personalized Frequency</h2>
+                    <h2 className="text-2xl font-semibold text-foreground">Your Personalized Frequency</h2>
                   </div>
                   
                   {/* Advanced Frequency Visualizer */}
@@ -454,10 +454,10 @@ const Index = () => {
                 </>
               ) : (
                 <div className="text-center py-12">
-                  <div className="text-purple-400 mb-4">
+                  <div className="text-foreground/60 mb-4">
                     <Waves className="h-16 w-16 mx-auto mb-4 opacity-50" />
                   </div>
-                  <p className="text-purple-300 text-lg">Generate a frequency first by describing your mood or selecting a preset.</p>
+                  <p className="text-foreground/80 text-lg">Generate a frequency first by describing your mood or selecting a preset.</p>
                 </div>
               )}
             </TabsContent>
@@ -465,10 +465,10 @@ const Index = () => {
             {/* New White Noise Tab */}
             <TabsContent value="white-noise" className="space-y-6 p-8">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center shadow-neon">
                   <span className="text-foreground font-bold text-sm">🌊</span>
                 </div>
-                <h2 className="text-2xl font-semibold text-purple-200">Natural White Noise</h2>
+                <h2 className="text-2xl font-semibold text-foreground">Natural White Noise</h2>
               </div>
               
               <EnhancedWhiteNoisePlayer 
@@ -483,35 +483,35 @@ const Index = () => {
             {/* Information Tab */}
             <TabsContent value="information" className="space-y-6 p-8">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center shadow-neon">
                   <span className="text-foreground font-bold text-sm">i</span>
                 </div>
-                <h2 className="text-2xl font-semibold text-purple-200">Learn About Sound Therapy</h2>
+                <h2 className="text-2xl font-semibold text-foreground">Learn About Sound Therapy</h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <Card className="bg-black/50 border-purple-900/50 backdrop-blur-sm p-6">
+                <Card className="bg-black/50 border-primary/30 backdrop-blur-sm p-6">
                   <div className="flex items-start space-x-4">
-                    <div className="p-2 bg-purple-600/20 rounded-lg">
-                      <Brain className="h-5 w-5 text-purple-400" />
+                    <div className="p-2 bg-primary/20 rounded-lg">
+                      <Brain className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-purple-200 mb-2">Science-Based Frequencies</h3>
-                      <p className="text-purple-300 text-sm leading-relaxed">
+                      <h3 className="font-semibold text-foreground mb-2">Science-Based Frequencies</h3>
+                      <p className="text-foreground/80 text-sm leading-relaxed">
                         Each frequency is carefully selected based on sound therapy research to resonate with your emotional state and promote natural healing.
                       </p>
                     </div>
                   </div>
                 </Card>
                 
-                <Card className="bg-black/50 border-purple-900/50 backdrop-blur-sm p-6">
+                <Card className="bg-black/50 border-primary/30 backdrop-blur-sm p-6">
                   <div className="flex items-start space-x-4">
-                    <div className="p-2 bg-violet-600/20 rounded-lg">
-                      <Heart className="h-5 w-5 text-violet-400" />
+                    <div className="p-2 bg-primary/20 rounded-lg">
+                      <Heart className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-purple-200 mb-2">Personalized Therapy</h3>
-                      <p className="text-purple-300 text-sm leading-relaxed">
+                      <h3 className="font-semibold text-foreground mb-2">Personalized Therapy</h3>
+                      <p className="text-foreground/80 text-sm leading-relaxed">
                         Your unique emotional profile is analyzed to create a custom frequency that matches your specific needs and current state.
                       </p>
                     </div>
@@ -519,39 +519,87 @@ const Index = () => {
                 </Card>
               </div>
 
-              <Card className="bg-black/50 border-indigo-900/50 backdrop-blur-sm p-6">
-                <h3 className="font-semibold text-indigo-200 mb-4 flex items-center space-x-2">
-                  <Waves className="h-5 w-5" />
+              <Card className="bg-black/50 border-primary/30 backdrop-blur-sm p-6">
+                <h3 className="font-semibold text-foreground mb-4 flex items-center space-x-2">
+                  <Waves className="h-5 w-5 text-primary" />
                   <span>Therapy Tips</span>
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                  <div className="text-indigo-300">
+                  <div className="text-foreground/80">
                     <strong>Duration:</strong> Listen for 10-20 minutes for optimal effects
                   </div>
-                  <div className="text-indigo-300">
+                  <div className="text-foreground/80">
                     <strong>Environment:</strong> Use headphones in a quiet, comfortable space
                   </div>
-                  <div className="text-indigo-300">
+                  <div className="text-foreground/80">
                     <strong>Practice:</strong> Regular sessions amplify the healing benefits
                   </div>
                 </div>
               </Card>
 
-              {/* About Us Section */}
-              <Card className="bg-black/50 border-purple-900/50 backdrop-blur-sm p-6">
-                <h3 className="font-semibold text-purple-200 mb-4 flex items-center space-x-2">
-                  <Heart className="h-5 w-5" />
-                  <span>About Us</span>
+              {/* About Developer Section */}
+              <Card className="bg-black/50 border-primary/30 backdrop-blur-sm p-8">
+                <h3 className="font-semibold text-foreground mb-6 flex items-center space-x-2 text-xl">
+                  <Heart className="h-6 w-6 text-primary" />
+                  <span>About Developer</span>
                 </h3>
-                <div className="text-center space-y-4">
-                  <div className="space-y-2">
-                    <h4 className="text-xl font-semibold text-purple-200">Shaswat Raj</h4>
-                    <p className="text-purple-400">Developer</p>
+                
+                <div className="space-y-6">
+                  {/* Developer Info */}
+                  <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
+                    <div className="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center shadow-neon">
+                      <span className="text-2xl font-bold text-foreground">SR</span>
+                    </div>
+                    
+                    <div className="flex-1 text-center md:text-left space-y-3">
+                      <h4 className="text-2xl font-bold text-foreground">👤 Shaswat Raj</h4>
+                      <p className="text-primary-glow text-lg">🎓 Final Year IT Student at NIET, Greater Noida</p>
+                      <p className="text-foreground/80 text-base">💼 Aspiring Full Stack Developer and AI Enthusiast</p>
+                      
+                      {/* Contact Links */}
+                      <div className="flex flex-wrap justify-center md:justify-start gap-4 pt-2">
+                        <a 
+                          href="https://github.com/rajShaswat005" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center space-x-2 bg-primary/20 hover:bg-primary/30 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105"
+                        >
+                          <span className="text-sm font-medium text-foreground">🌐 GitHub</span>
+                        </a>
+                        <a 
+                          href="mailto:shaswatraj536@gmail.com"
+                          className="flex items-center space-x-2 bg-primary/20 hover:bg-primary/30 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105"
+                        >
+                          <span className="text-sm font-medium text-foreground">📧 Email</span>
+                        </a>
+                        <a 
+                          href="https://www.linkedin.com/in/shaswat-raj-8b9487260/" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center space-x-2 bg-primary/20 hover:bg-primary/30 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105"
+                        >
+                          <span className="text-sm font-medium text-foreground">🔗 LinkedIn</span>
+                        </a>
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-purple-300 text-sm leading-relaxed max-w-md mx-auto">
-                    <p>
-                      Passionate about creating meaningful digital experiences that promote wellness and healing. 
-                      Aurix represents my dedication to combining technology with therapeutic sound design for emotional well-being.
+                  
+                  {/* Project Vision */}
+                  <div className="bg-primary/10 rounded-lg p-6 border border-primary/20">
+                    <h5 className="font-semibold text-foreground mb-3 text-lg">🚀 Project Vision</h5>
+                    <p className="text-foreground/90 leading-relaxed">
+                      Our mission is to harness the power of sound and AI to create personalized auditory experiences 
+                      that promote relaxation, focus, and mental clarity for everyone. Aurix represents the future of 
+                      therapeutic sound design, combining cutting-edge technology with wellness principles to create 
+                      meaningful digital experiences that truly make a difference in people's lives.
+                    </p>
+                  </div>
+                  
+                  {/* Developer Story */}
+                  <div className="text-center">
+                    <p className="text-foreground/80 text-sm leading-relaxed italic">
+                      "Passionate about creating meaningful digital experiences that promote wellness and healing. 
+                      Every line of code in Aurix is written with the intention of bringing peace and balance to your daily life."
                     </p>
                   </div>
                 </div>
