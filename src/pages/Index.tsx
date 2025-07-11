@@ -284,17 +284,17 @@ const Index = () => {
           
           {/* Enhanced Hero Description */}
           <div className="text-center flex-1 mx-8">
-            <p className="text-xl font-light max-w-lg mx-auto leading-relaxed text-gradient-rainbow animate-shimmer mb-4 text-slate-950">
+            <p className="text-xl font-light max-w-lg mx-auto leading-relaxed text-gradient-rainbow animate-shimmer mb-4">
               Transform your emotions into healing frequencies through advanced sound therapy
             </p>
             <div className="flex items-center justify-center space-x-4 text-primary-glow text-sm">
               <div className="flex items-center space-x-2 bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm border border-primary/20">
                 <Heart className="h-4 w-4 animate-pulse text-cyber-pink" />
-                <span>AI-Powered Wellness</span>
+                <span className="text-primary-glow font-medium">AI-Powered Wellness</span>
               </div>
               <div className="flex items-center space-x-2 bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm border border-primary/20">
                 <Zap className="h-4 w-4 animate-pulse text-electric-blue" />
-                <span>Real-time Visualization</span>
+                <span className="text-primary-glow font-medium">Real-time Visualization</span>
               </div>
             </div>
           </div>
@@ -337,20 +337,20 @@ const Index = () => {
                 </div>
                 <div>
                   <h2 className="text-3xl font-bold text-gradient-cosmic">Share Your Current State</h2>
-                  <p className="text-primary-glow text-sm">Let AI transform your emotions into healing frequencies</p>
+                  <p className="text-electric-blue font-medium text-sm">Let AI transform your emotions into healing frequencies</p>
                 </div>
               </div>
               
               <div className="space-y-8">
                 {/* Mood Selection Buttons */}
                 <div className="space-y-4">
-                  <p className="text-foreground/80 text-sm font-medium text-center">Select your current mood:</p>
+                  <p className="text-plasma-green font-medium text-sm text-center">Select your current mood:</p>
                   <MoodButtons selectedMood={selectedMood} onMoodSelect={setSelectedMood} />
                 </div>
                 
                 {/* Large Textarea */}
                 <div className="space-y-2">
-                  <label htmlFor="mood-input" className="text-foreground/80 text-sm font-medium">
+                  <label htmlFor="mood-input" className="text-neon-purple font-medium text-sm">
                     Or describe how you're feeling in detail:
                   </label>
                   <div className="relative">
@@ -377,7 +377,7 @@ const Index = () => {
                 <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center shadow-neon">
                   <span className="text-foreground font-bold text-sm">✨</span>
                 </div>
-                <h2 className="text-2xl font-semibold text-foreground">Healing Frequency Presets</h2>
+                <h2 className="text-2xl font-semibold text-gradient-cosmic">Healing Frequency Presets</h2>
               </div>
               
               <PresetFrequencies onSelectFrequency={handlePresetSelect} />
@@ -390,7 +390,7 @@ const Index = () => {
                     <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center shadow-neon">
                       <span className="text-foreground font-bold text-sm">🎵</span>
                     </div>
-                    <h2 className="text-2xl font-semibold text-foreground">Your Personalized Frequency</h2>
+                    <h2 className="text-2xl font-semibold text-gradient-cosmic">Your Personalized Frequency</h2>
                   </div>
                   
                   {/* Advanced Frequency Visualizer */}
@@ -419,7 +419,7 @@ const Index = () => {
                 <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center shadow-neon">
                   <span className="text-foreground font-bold text-sm">🌊</span>
                 </div>
-                <h2 className="text-2xl font-semibold text-foreground">Natural White Noise</h2>
+                <h2 className="text-2xl font-semibold text-gradient-cosmic">Natural White Noise</h2>
               </div>
               
               <EnhancedWhiteNoisePlayer onTrackSelect={handleWhiteNoiseSelect} selectedTrackId={(() => {
@@ -434,7 +434,7 @@ const Index = () => {
                 <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center shadow-neon">
                   <span className="text-foreground font-bold text-sm">i</span>
                 </div>
-                <h2 className="text-2xl font-semibold text-foreground">Learn About Sound Therapy</h2>
+                <h2 className="text-2xl font-semibold text-gradient-cosmic">Learn About Sound Therapy</h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -444,8 +444,8 @@ const Index = () => {
                       <Brain className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground mb-2">Science-Based Frequencies</h3>
-                      <p className="text-foreground/80 text-sm leading-relaxed">
+                      <h3 className="font-semibold text-electric-blue mb-2">Science-Based Frequencies</h3>
+                      <p className="text-primary-glow text-sm leading-relaxed">
                         Each frequency is carefully selected based on sound therapy research to resonate with your emotional state and promote natural healing.
                       </p>
                     </div>
@@ -458,8 +458,8 @@ const Index = () => {
                       <Heart className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground mb-2">Personalized Therapy</h3>
-                      <p className="text-foreground/80 text-sm leading-relaxed">
+                      <h3 className="font-semibold text-cyber-pink mb-2">Personalized Therapy</h3>
+                      <p className="text-primary-glow text-sm leading-relaxed">
                         Your unique emotional profile is analyzed to create a custom frequency that matches your specific needs and current state.
                       </p>
                     </div>
@@ -468,26 +468,26 @@ const Index = () => {
               </div>
 
               <Card className="bg-black/50 border-primary/30 backdrop-blur-sm p-6">
-                <h3 className="font-semibold text-foreground mb-4 flex items-center space-x-2">
+                <h3 className="font-semibold text-plasma-green mb-4 flex items-center space-x-2">
                   <Waves className="h-5 w-5 text-primary" />
                   <span>Therapy Tips</span>
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                  <div className="text-foreground/80">
-                    <strong>Duration:</strong> Listen for 10-20 minutes for optimal effects
+                  <div className="text-primary-glow">
+                    <strong className="text-neon-purple">Duration:</strong> Listen for 10-20 minutes for optimal effects
                   </div>
-                  <div className="text-foreground/80">
-                    <strong>Environment:</strong> Use headphones in a quiet, comfortable space
+                  <div className="text-primary-glow">
+                    <strong className="text-neon-purple">Environment:</strong> Use headphones in a quiet, comfortable space
                   </div>
-                  <div className="text-foreground/80">
-                    <strong>Practice:</strong> Regular sessions amplify the healing benefits
+                  <div className="text-primary-glow">
+                    <strong className="text-neon-purple">Practice:</strong> Regular sessions amplify the healing benefits
                   </div>
                 </div>
               </Card>
 
               {/* About Developer Section */}
               <Card className="bg-black/50 border-primary/30 backdrop-blur-sm p-8">
-                <h3 className="font-semibold text-foreground mb-6 flex items-center space-x-2 text-xl">
+                <h3 className="font-semibold text-gradient-cosmic mb-6 flex items-center space-x-2 text-xl">
                   <Heart className="h-6 w-6 text-primary" />
                   <span>About Developer</span>
                 </h3>
@@ -504,20 +504,20 @@ const Index = () => {
                     </div>
                     
                     <div className="flex-1 text-center md:text-left space-y-3">
-                      <h4 className="text-2xl font-bold text-foreground">👤 Shaswat Raj</h4>
-                      <p className="text-primary-glow text-lg">🎓 Final Year IT Student at NIET, Greater Noida</p>
-                      <p className="text-foreground/80 text-base">💼 Aspiring Full Stack Developer and AI Enthusiast</p>
+                      <h4 className="text-2xl font-bold text-gradient-cosmic">👤 Shaswat Raj</h4>
+                      <p className="text-electric-blue text-lg font-medium">🎓 Final Year IT Student at NIET, Greater Noida</p>
+                      <p className="text-cyber-pink text-base font-medium">💼 Aspiring Full Stack Developer and AI Enthusiast</p>
                       
                       {/* Contact Links */}
                       <div className="flex flex-wrap justify-center md:justify-start gap-4 pt-2">
                         <a href="https://github.com/rajShaswat005" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 bg-primary/20 hover:bg-primary/30 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105">
-                          <span className="text-sm font-medium text-foreground">🌐 GitHub</span>
+                          <span className="text-sm font-medium text-plasma-green">🌐 GitHub</span>
                         </a>
                         <a href="mailto:shaswatraj536@gmail.com" className="flex items-center space-x-2 bg-primary/20 hover:bg-primary/30 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105">
-                          <span className="text-sm font-medium text-foreground">📧 Email</span>
+                          <span className="text-sm font-medium text-neon-purple">📧 Email</span>
                         </a>
                         <a href="https://www.linkedin.com/in/shaswat-raj-8b9487260/" target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2 bg-primary/20 hover:bg-primary/30 px-3 py-2 rounded-lg transition-all duration-300 hover:scale-105">
-                          <span className="text-sm font-medium text-foreground">🔗 LinkedIn</span>
+                          <span className="text-sm font-medium text-electric-blue">🔗 LinkedIn</span>
                         </a>
                       </div>
                     </div>
@@ -525,8 +525,8 @@ const Index = () => {
                   
                   {/* Project Vision */}
                   <div className="bg-primary/10 rounded-lg p-6 border border-primary/20">
-                    <h5 className="font-semibold text-foreground mb-3 text-lg">🚀 Project Vision</h5>
-                    <p className="text-foreground/90 leading-relaxed">
+                    <h5 className="font-semibold text-cosmic-violet mb-3 text-lg">🚀 Project Vision</h5>
+                    <p className="text-primary-glow leading-relaxed">
                       Our mission is to harness the power of sound and AI to create personalized auditory experiences 
                       that promote relaxation, focus, and mental clarity for everyone. Aurix represents the future of 
                       therapeutic sound design, combining cutting-edge technology with wellness principles to create 
@@ -536,7 +536,7 @@ const Index = () => {
                   
                   {/* Developer Story */}
                   <div className="text-center">
-                    <p className="text-foreground/80 text-sm leading-relaxed italic">
+                    <p className="text-solar-orange text-sm leading-relaxed italic font-medium">
                       "Passionate about creating meaningful digital experiences that promote wellness and healing. 
                       Every line of code in Aurix is written with the intention of bringing peace and balance to your daily life."
                     </p>
