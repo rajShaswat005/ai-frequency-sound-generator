@@ -1,10 +1,15 @@
 Developed a mind relaxing and calming prompt based frequency sound generator web application.
 ## Features Includes:
-- Prompt Based
-- Generate Frequency sound based on your mood (i.e. how're you feeling).
-- 
-
-
+1. Prompt-driven mood → frequency generator — type how you feel and the app analyzes your input to recommend and generate a healing frequency (e.g., calm → 432 Hz).
+2. Curated mood presets with metadata — prebuilt moods (calm, anxious, angry, sad) include frequency, short description, color theme and suggested usage.
+3. High-fidelity oscillator playback with waveform selection — real-time tone generation using selectable waveforms (sine, triangle, sawtooth, square) for precise sonic control.
+4. Per-track audio effects and controls — adjust reverb, low-pass filtering and vibrato per track for personalized soundscapes.
+5. White-noise library and specialized engine — multiple natural white-noise tracks selectable and playable via a dedicated engine for relaxation and focus.
+6. Robust queue / playlist system — add, remove, reorder, shuffle, repeat and control individual tracks with per-track volume and play/pause controls.
+7. Immersive canvas visualizations — synchronized FrequencyVisualizer, SpectrumAnalyzer and WaveformDisplay render responsive visuals (gradients, glow, particles) driven by audio.
+8. Polished, themeable UI & UX — responsive Tailwind + shadcn-ui components with light/dark themes, animated status indicators, popover settings and accessible controls.
+9. Authentication & persistence-ready architecture — Supabase client + React Query integration and an AuthButton component provide the foundation for user sign-in and persistent presets/playlists.
+10. UX safeguards and polish — toast notifications, focused controls, reduced-motion support and clear 404 handling for a reliable, user-friendly experience.
 
 
 ## This project is built with:
