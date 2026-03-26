@@ -72,7 +72,7 @@ const AuthButton = () => {
       setUserProfile(data);
       
       // If user doesn't have a username, show the username form
-      if (!data?.username) {
+      if (!data || !data.username) {
         setShowUsernameForm(true);
       }
     } catch (error) {
